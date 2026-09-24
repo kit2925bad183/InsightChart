@@ -29,7 +29,13 @@ export async function parseImage(file: File): Promise<ParsedSource> {
 
   try {
     const Tesseract = await import("tesseract.js");
-    const { data } = await Tesseract.recognize(file, "eng");
+    // Self-hosted (public/tesseract/) instead of the tesseract.js/jsdelivr CDN defaults,
+    // so OCR doesn't silently depend on a third-party CDN being reachable at runtime.
+    const { data } = await Tesseract.recognize(file, "eng", {
+      workerPath: "/tesseract/worker.min.js",
+      corePath: "/tesseract",
+      langPath: "/tesseract",
+    });
     const text = data.text ?? "";
     const sheet = linesToSheet(text, file.name);
     const sheets = sheet ? [sheet] : [];

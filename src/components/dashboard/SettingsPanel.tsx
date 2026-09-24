@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { useRef, useState } from "react";
+import { RotateCcw, Download, Upload } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { categorical, tierColor } from "@/lib/palette";
+import { categoricalVar, tierColorVar } from "@/lib/palette";
 import { DEFAULT_BANDS } from "@/lib/analysis/scoreBands";
+import { downloadWorkspace, parseWorkspaceFile } from "@/lib/workspace";
+import { DepartmentOverridesPanel } from "@/components/dashboard/DepartmentOverridesPanel";
 import type { ScoreBand } from "@/lib/types";
 
 const TIER_OPTIONS: ScoreBand["tier"][] = ["support", "developing", "strong"];
@@ -14,6 +16,9 @@ const TIER_OPTIONS: ScoreBand["tier"][] = ["support", "developing", "strong"];
 export function SettingsPanel() {
   const { state, dispatch } = useApp();
   const [expanded, setExpanded] = useState(false);
+  const [deptExpanded, setDeptExpanded] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const updateBand = (id: string, patch: Partial<ScoreBand>) => {
     dispatch({ type: "SET_BANDS", bands: state.scoreBands.map((b) => (b.id === id ? { ...b, ...patch } : b)) });
@@ -65,9 +70,23 @@ export function SettingsPanel() {
         />
       </label>
 
+      {state.normalizeDepartments && (
+        <div className="mb-4">
+          <Button size="sm" variant="ghost" onClick={() => setDeptExpanded((v) => !v)}>
+            {deptExpanded ? "Hide department mapping" : "Edit department mapping"}
+            {Object.keys(state.departmentOverrides).length > 0 && ` (${Object.keys(state.departmentOverrides).length} custom)`}
+          </Button>
+          {deptExpanded && (
+            <div className="mt-2">
+              <DepartmentOverridesPanel />
+            </div>
+          )}
+        </div>
+      )}
+
       <p className="text-xs font-medium text-[var(--text-secondary)] mb-1.5">Custom chart colour</p>
       <div className="flex items-center gap-1.5 mb-1">
-        {categorical.light.map((c, i) => (
+        {categoricalVar.map((c, i) => (
           <button
             key={c}
             aria-label={`Use colour ${i + 1}`}
@@ -90,7 +109,7 @@ export function SettingsPanel() {
           <div className="space-y-1.5">
             {state.scoreBands.map((b) => (
               <div key={b.id} className="flex items-center gap-2 text-xs">
-                <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: tierColor[b.tier].light }} />
+                <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: tierColorVar[b.tier] }} />
                 <input
                   value={b.label}
                   onChange={(e) => updateBand(b.id, { label: e.target.value })}
@@ -129,6 +148,52 @@ export function SettingsPanel() {
           </div>
         </div>
       )}
+
+      <div className="mt-4 pt-3 border-t border-[var(--border)] flex flex-wrap items-center gap-2">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() =>
+            downloadWorkspace({
+              mapping: state.mapping,
+              chartType: state.chartType,
+              scoreBands: state.scoreBands,
+              thresholdSupport: state.thresholdSupport,
+              thresholdStrong: state.thresholdStrong,
+              chartTitle: state.chartTitle,
+              chartAccentIndex: state.chartAccentIndex,
+              normalizeDepartments: state.normalizeDepartments,
+              departmentOverrides: state.departmentOverrides,
+            })
+          }
+        >
+          <Download size={13} /> Save workspace
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => importInputRef.current?.click()}>
+          <Upload size={13} /> Load workspace
+        </Button>
+        <input
+          ref={importInputRef}
+          type="file"
+          accept="application/json"
+          className="hidden"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            e.target.value = "";
+            if (!file) return;
+            const text = await file.text();
+            const config = parseWorkspaceFile(text);
+            if (config) {
+              dispatch({ type: "LOAD_WORKSPACE", config });
+              setImportError(null);
+            } else {
+              setImportError("That file doesn't look like an InsightChart workspace export.");
+            }
+          }}
+        />
+      </div>
+      {importError && <p className="text-[11px] text-[var(--status-critical)] mt-1.5">{importError}</p>}
+      <p className="text-[10px] text-[var(--text-muted)] mt-1">Saves column mapping, chart type, score bands, and thresholds — re-apply them to a future file without reconfiguring.</p>
     </Card>
   );
 }

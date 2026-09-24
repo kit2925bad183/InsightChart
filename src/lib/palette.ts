@@ -6,6 +6,13 @@ export const categorical = {
   dark: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
 };
 
+/** CSS-custom-property references (resolve through globals.css's light/dark blocks) —
+ * use these for SVG fill/stroke so charts recolor automatically on theme change with
+ * no React re-render needed. Use `categorical.light`/`.dark` directly only where a
+ * concrete hex is required (e.g. the color-swatch picker buttons still work fine with
+ * the var() form too via inline style, but tests/exports sometimes want a literal). */
+export const categoricalVar = Array.from({ length: 8 }, (_, i) => `var(--series-${i + 1})`);
+
 export const status = {
   good: { light: "#0ca30c", dark: "#0ca30c" },
   warning: { light: "#fab219", dark: "#fab219" },
@@ -18,6 +25,15 @@ export const tierColor = {
   support: status.critical,
   developing: status.warning,
   strong: status.good,
+};
+
+/** CSS-var form of tierColor, for SVG fill/stroke (see categoricalVar above). Status
+ * hues are mode-invariant, but routing through the var still keeps every chart color
+ * consistent in how it's sourced. */
+export const tierColorVar = {
+  support: "var(--status-critical)",
+  developing: "var(--status-warning)",
+  strong: "var(--status-good)",
 };
 
 export const chrome = {

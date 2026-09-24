@@ -68,6 +68,14 @@ export function canonicalDepartmentLabel(raw: string | null | undefined): string
   return canonicalizeDepartment(raw).code;
 }
 
+/** Same as canonicalDepartmentLabel, but a user-supplied override (raw value -> code)
+ * wins over the heuristic when present — lets someone correct a bad guess. */
+export function resolveDepartment(raw: string | null | undefined, overrides: Record<string, string>): string {
+  const trimmed = raw != null ? String(raw).trim() : "";
+  if (trimmed && overrides[trimmed]) return overrides[trimmed];
+  return canonicalDepartmentLabel(raw);
+}
+
 /** Full name for a known branch code, falling back to the code itself. */
 export function departmentFullName(code: string): string {
   return FULL_NAMES[code.toUpperCase()] ?? code;

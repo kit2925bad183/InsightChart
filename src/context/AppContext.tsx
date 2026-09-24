@@ -1,10 +1,12 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useReducer } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef } from "react";
 import type { AppState, ChartType, ColumnMapping, ParsedSource, ScoreBand } from "@/lib/types";
 import { inferColumns, detectMapping } from "@/lib/analysis/inferColumns";
 import { DEFAULT_BANDS } from "@/lib/analysis/scoreBands";
 import { buildMockSource } from "@/lib/mockData";
+import { loadSession, saveSession, type PersistedSession } from "@/lib/persistence";
+import type { WorkspaceConfig } from "@/lib/workspace";
 
 type Action =
   | { type: "LOAD_SOURCE"; source: ParsedSource }
@@ -22,14 +24,19 @@ type Action =
   | { type: "SET_CHART_TITLE"; title: string }
   | { type: "SET_ACCENT"; index: number }
   | { type: "TOGGLE_NORMALIZE_DEPARTMENTS" }
+  | { type: "SET_DEPARTMENT_OVERRIDE"; raw: string; code: string | null }
   | { type: "ADD_NL_HISTORY"; query: string; resultSummary: string }
+  | { type: "HYDRATE"; session: PersistedSession }
+  | { type: "LOAD_WORKSPACE"; config: WorkspaceConfig }
+  | { type: "DISMISS_RESTORED_NOTICE" }
   | { type: "RESET" };
 
-function freshFromSource(source: ParsedSource): AppState {
+function freshFromSource(source: ParsedSource, prevNonce = 0): AppState {
   const activeSheet = source.sheets[0];
   const columns = activeSheet ? inferColumns(activeSheet) : [];
   const mapping = activeSheet ? detectMapping(activeSheet, columns) : {};
   return {
+    loadNonce: prevNonce + 1,
     status: source.sheets.length ? "ready" : "error",
     errorMessage: source.sheets.length ? undefined : (source.warnings[0] ?? "No data found."),
     source,
@@ -49,7 +56,9 @@ function freshFromSource(source: ParsedSource): AppState {
     chartColorTheme: "default",
     chartAccentIndex: 0,
     normalizeDepartments: true,
+    departmentOverrides: {},
     nlHistory: [],
+    restoredNotice: false,
   };
 }
 
@@ -64,13 +73,13 @@ function reducer(state: AppState, action: Action): AppState {
     case "ERROR":
       return { ...state, status: "error", errorMessage: action.message };
     case "LOAD_SOURCE":
-      return freshFromSource(action.source);
+      return freshFromSource(action.source, state.loadNonce);
     case "SET_ACTIVE_SHEET": {
       const sheet = state.source?.sheets.find((s) => s.id === action.id);
       if (!sheet) return state;
       const columns = inferColumns(sheet);
       const mapping = detectMapping(sheet, columns);
-      return { ...state, activeSheetId: action.id, columns, mapping };
+      return { ...state, loadNonce: state.loadNonce + 1, activeSheetId: action.id, columns, mapping };
     }
     case "SET_MAPPING":
       return { ...state, mapping: { ...state.mapping, ...action.mapping } };
@@ -94,10 +103,51 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, chartAccentIndex: action.index };
     case "TOGGLE_NORMALIZE_DEPARTMENTS":
       return { ...state, normalizeDepartments: !state.normalizeDepartments };
+    case "SET_DEPARTMENT_OVERRIDE": {
+      const next = { ...state.departmentOverrides };
+      if (action.code === null) delete next[action.raw];
+      else next[action.raw] = action.code;
+      return { ...state, departmentOverrides: next };
+    }
     case "ADD_NL_HISTORY":
       return { ...state, nlHistory: [{ query: action.query, resultSummary: action.resultSummary }, ...state.nlHistory].slice(0, 10) };
+    case "HYDRATE": {
+      const s = action.session;
+      const base = freshFromSource(s.source, state.loadNonce);
+      return {
+        ...base,
+        activeSheetId: s.activeSheetId ?? base.activeSheetId,
+        mapping: s.mapping,
+        chartType: s.chartType,
+        scoreBands: s.scoreBands,
+        thresholdSupport: s.thresholdSupport,
+        thresholdStrong: s.thresholdStrong,
+        chartTitle: s.chartTitle,
+        chartAccentIndex: s.chartAccentIndex,
+        normalizeDepartments: s.normalizeDepartments,
+        departmentOverrides: s.departmentOverrides ?? {},
+        restoredNotice: true,
+      };
+    }
+    case "DISMISS_RESTORED_NOTICE":
+      return { ...state, restoredNotice: false };
+    case "LOAD_WORKSPACE": {
+      const c = action.config;
+      return {
+        ...state,
+        mapping: c.mapping,
+        chartType: c.chartType,
+        scoreBands: c.scoreBands,
+        thresholdSupport: c.thresholdSupport,
+        thresholdStrong: c.thresholdStrong,
+        chartTitle: c.chartTitle,
+        chartAccentIndex: c.chartAccentIndex,
+        normalizeDepartments: c.normalizeDepartments,
+        departmentOverrides: c.departmentOverrides ?? {},
+      };
+    }
     case "RESET":
-      return freshFromSource(buildMockSource());
+      return freshFromSource(buildMockSource(), state.loadNonce);
     default:
       return state;
   }
@@ -115,6 +165,61 @@ const AppContext = createContext<{
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, initialState);
   const value = useMemo(() => ({ state, dispatch }), [state]);
+  const hydratedRef = useRef(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Restore the last uploaded session (if any) once on mount, after the fast
+  // mock-data first paint — a refresh shouldn't silently discard someone's file.
+  useEffect(() => {
+    let cancelled = false;
+    loadSession().then((session) => {
+      if (!cancelled && session && !hydratedRef.current) {
+        hydratedRef.current = true;
+        dispatch({ type: "HYDRATE", session });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Debounced autosave whenever there's a real (non-mock) dataset loaded.
+  useEffect(() => {
+    if (!state.source || state.source.kind === "mock") return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      saveSession({
+        source: state.source!,
+        activeSheetId: state.activeSheetId,
+        mapping: state.mapping,
+        chartType: state.chartType,
+        scoreBands: state.scoreBands,
+        thresholdSupport: state.thresholdSupport,
+        thresholdStrong: state.thresholdStrong,
+        chartTitle: state.chartTitle,
+        chartAccentIndex: state.chartAccentIndex,
+        normalizeDepartments: state.normalizeDepartments,
+        departmentOverrides: state.departmentOverrides,
+        savedAt: Date.now(),
+      });
+    }, 800);
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    };
+  }, [
+    state.source,
+    state.activeSheetId,
+    state.mapping,
+    state.chartType,
+    state.scoreBands,
+    state.thresholdSupport,
+    state.thresholdStrong,
+    state.chartTitle,
+    state.chartAccentIndex,
+    state.normalizeDepartments,
+    state.departmentOverrides,
+  ]);
+
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

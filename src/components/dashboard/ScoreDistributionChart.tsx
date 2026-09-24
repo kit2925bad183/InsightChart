@@ -5,14 +5,14 @@ import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis
 import type { ScoreBand } from "@/lib/types";
 import type { StudentRecord } from "@/lib/analysis/stats";
 import { bandForScore } from "@/lib/analysis/scoreBands";
-import { tierColor } from "@/lib/palette";
+import { tierColorVar } from "@/lib/palette";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Download, FileImage } from "lucide-react";
 import { exportChartPdf, exportChartPng, exportRowsCsv } from "@/lib/export";
 
 function TierDot({ tier }: { tier: "support" | "developing" | "strong" }) {
-  return <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: tierColor[tier].light }} />;
+  return <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: tierColorVar[tier] }} />;
 }
 
 interface TooltipPayloadItem {
@@ -109,7 +109,7 @@ export function ScoreDistributionChart({
               isAnimationActive={false}
             >
               {data.map((d) => (
-                <Cell key={d.id} fill={tierColor[d.tier].light} />
+                <Cell key={d.id} fill={tierColorVar[d.tier]} />
               ))}
             </Bar>
           </BarChart>

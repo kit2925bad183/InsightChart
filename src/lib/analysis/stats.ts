@@ -1,5 +1,5 @@
 import type { CellValue, DataSheet } from "../types";
-import { canonicalDepartmentLabel } from "./normalizeDepartment";
+import { resolveDepartment } from "./normalizeDepartment";
 
 export interface StudentRecord {
   row: DataSheet["rows"][number];
@@ -12,7 +12,8 @@ export interface StudentRecord {
 export function toStudentRecords(
   sheet: DataSheet,
   mapping: { studentName?: string; registration?: string; department?: string; numeric?: string },
-  normalizeDepartments = true
+  normalizeDepartments = true,
+  departmentOverrides: Record<string, string> = {}
 ): StudentRecord[] {
   const { studentName, registration, department, numeric } = mapping;
   if (!numeric) return [];
@@ -26,7 +27,7 @@ export function toStudentRecords(
         row,
         name: studentName ? String(row[studentName] ?? "—") : "—",
         registration: registration ? String(row[registration] ?? "—") : "—",
-        department: department && normalizeDepartments ? canonicalDepartmentLabel(rawDept) : rawDept,
+        department: department && normalizeDepartments ? resolveDepartment(rawDept, departmentOverrides) : rawDept,
         score,
       };
     })

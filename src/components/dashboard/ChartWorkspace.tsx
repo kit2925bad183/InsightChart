@@ -26,7 +26,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Download, FileImage, Table2 } from "lucide-react";
 import { exportChartPdf, exportChartPng, exportRowsCsv } from "@/lib/export";
-import { categorical, sequentialBlue } from "@/lib/palette";
+import { categoricalVar, sequentialBlue } from "@/lib/palette";
 import {
   categoryAggregates,
   crossAggregates,
@@ -37,7 +37,7 @@ import {
 } from "@/lib/analysis/aggregate";
 import { FlowDiagram } from "@/components/charts/FlowDiagram";
 import { fmt } from "@/lib/analysis/stats";
-import { canonicalDepartmentLabel } from "@/lib/analysis/normalizeDepartment";
+import { resolveDepartment } from "@/lib/analysis/normalizeDepartment";
 
 const TOOLTIP_STYLE = { fontSize: 12, borderRadius: 8, border: "1px solid var(--border)" };
 const AXIS_TICK = { fontSize: 11, fill: "var(--text-muted)" };
@@ -46,7 +46,7 @@ export function ChartWorkspace() {
   const { state, activeSheet } = useApp();
   const chartRef = useRef<HTMLDivElement>(null);
   const { mapping, chartType, chartTitle, scoreBands, chartAccentIndex } = state;
-  const accent = categorical.light[chartAccentIndex % categorical.light.length];
+  const accent = categoricalVar[chartAccentIndex % categoricalVar.length];
 
   const rows = useMemo(() => {
     if (!activeSheet) return [];
@@ -59,10 +59,18 @@ export function ChartWorkspace() {
     }
     if (mapping.department && state.normalizeDepartments) {
       const deptKey = mapping.department;
-      r = r.map((row) => ({ ...row, [deptKey]: canonicalDepartmentLabel(String(row[deptKey] ?? "")) }));
+      r = r.map((row) => ({ ...row, [deptKey]: resolveDepartment(String(row[deptKey] ?? ""), state.departmentOverrides) }));
     }
     return r;
-  }, [activeSheet, mapping.scoreMin, mapping.scoreMax, mapping.numeric, mapping.department, state.normalizeDepartments]);
+  }, [
+    activeSheet,
+    mapping.scoreMin,
+    mapping.scoreMax,
+    mapping.numeric,
+    mapping.department,
+    state.normalizeDepartments,
+    state.departmentOverrides,
+  ]);
 
   const hasCategory = !!mapping.category;
   const hasNumeric = !!mapping.numeric;
@@ -110,7 +118,7 @@ export function ChartWorkspace() {
                   key={s}
                   dataKey={s}
                   stackId={chartType === "stacked-bar" ? "stack" : undefined}
-                  fill={categorical.light[i % categorical.light.length]}
+                  fill={categoricalVar[i % categoricalVar.length]}
                   radius={chartType === "stacked-bar" ? [0, 0, 0, 0] : [4, 4, 0, 0]}
                   maxBarSize={40}
                 />
@@ -138,7 +146,7 @@ export function ChartWorkspace() {
                 labelLine={false}
               >
                 {data.map((_, i) => (
-                  <Cell key={i} fill={categorical.light[i % categorical.light.length]} />
+                  <Cell key={i} fill={categoricalVar[i % categoricalVar.length]} />
                 ))}
               </Pie>
             </PieChart>

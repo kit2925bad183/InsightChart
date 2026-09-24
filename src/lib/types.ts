@@ -79,6 +79,9 @@ export interface ScoreBand {
 }
 
 export interface AppState {
+  /** Bumped on every LOAD_SOURCE / RESET — components key off this to reset their own
+   * per-dataset local state (selected tabs, search, NL results) when a new file loads. */
+  loadNonce: number;
   status: "empty" | "loading" | "error" | "ready";
   errorMessage?: string;
   source: ParsedSource | null;
@@ -98,5 +101,9 @@ export interface AppState {
   chartColorTheme: "default";
   chartAccentIndex: number;
   normalizeDepartments: boolean;
+  /** raw department value -> canonical code, user-corrected overrides of the heuristic */
+  departmentOverrides: Record<string, string>;
   nlHistory: { query: string; resultSummary: string }[];
+  /** true right after a persisted session was restored on load — drives a dismissible banner. */
+  restoredNotice: boolean;
 }

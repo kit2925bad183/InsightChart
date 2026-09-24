@@ -3,7 +3,14 @@
 import { useApp } from "@/context/AppContext";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
+import { Combobox, type ComboboxOption } from "@/components/ui/Combobox";
 import type { ChartType } from "@/lib/types";
+
+// Long headers (e.g. full survey-question text) are shown in full via CSS truncation +
+// a native title tooltip on hover, rather than hard-cut — the Combobox handles that.
+function toOptions(headers: string[]): ComboboxOption[] {
+  return headers.map((h) => ({ value: h, label: h }));
+}
 
 const CHART_TYPES: { value: ChartType; label: string }[] = [
   { value: "bar", label: "Bar chart" },
@@ -31,38 +38,30 @@ export function MappingPanel() {
     <Card>
       <CardHeader title="Chart setup" subtitle="Choose the columns and chart type to visualise" />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        <Select label="Category / X-axis" value={state.mapping.category ?? ""} onChange={(e) => setMapping({ category: e.target.value || undefined })}>
-          <option value="">None</option>
-          {headers.map((h) => (
-            <option key={h} value={h}>
-              {h}
-            </option>
-          ))}
-        </Select>
-        <Select label="Numeric / Y-axis" value={state.mapping.numeric ?? ""} onChange={(e) => setMapping({ numeric: e.target.value || undefined })}>
-          <option value="">None</option>
-          {numericHeaders.map((h) => (
-            <option key={h} value={h}>
-              {h}
-            </option>
-          ))}
-        </Select>
-        <Select label="Student name" value={state.mapping.studentName ?? ""} onChange={(e) => setMapping({ studentName: e.target.value || undefined })}>
-          <option value="">None</option>
-          {headers.map((h) => (
-            <option key={h} value={h}>
-              {h}
-            </option>
-          ))}
-        </Select>
-        <Select label="Department / group" value={state.mapping.department ?? ""} onChange={(e) => setMapping({ department: e.target.value || undefined })}>
-          <option value="">None</option>
-          {headers.map((h) => (
-            <option key={h} value={h}>
-              {h}
-            </option>
-          ))}
-        </Select>
+        <Combobox
+          label="Category / X-axis"
+          value={state.mapping.category}
+          onChange={(v) => setMapping({ category: v })}
+          options={toOptions(headers)}
+        />
+        <Combobox
+          label="Numeric / Y-axis"
+          value={state.mapping.numeric}
+          onChange={(v) => setMapping({ numeric: v })}
+          options={toOptions(numericHeaders)}
+        />
+        <Combobox
+          label="Student name"
+          value={state.mapping.studentName}
+          onChange={(v) => setMapping({ studentName: v })}
+          options={toOptions(headers)}
+        />
+        <Combobox
+          label="Department / group"
+          value={state.mapping.department}
+          onChange={(v) => setMapping({ department: v })}
+          options={toOptions(headers)}
+        />
         <Select
           label="Chart type"
           value={state.chartType}

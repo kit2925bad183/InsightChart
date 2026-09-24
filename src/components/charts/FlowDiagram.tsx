@@ -2,12 +2,12 @@
 
 import { useId, useState } from "react";
 import type { FlowLink } from "@/lib/analysis/aggregate";
-import { categorical, tierColor } from "@/lib/palette";
+import { categoricalVar, tierColorVar } from "@/lib/palette";
 
 const TIER_COLOR: Record<string, string> = {
-  Strong: tierColor.strong.light,
-  Developing: tierColor.developing.light,
-  "Needs support": tierColor.support.light,
+  Strong: tierColorVar.strong,
+  Developing: tierColorVar.developing,
+  "Needs support": tierColorVar.support,
 };
 
 export function FlowDiagram({ left, right, links }: { left: string[]; right: string[]; links: FlowLink[] }) {
@@ -74,7 +74,7 @@ export function FlowDiagram({ left, right, links }: { left: string[]; right: str
 
         {left.map((l, i) => (
           <g key={`${id}-l-${l}`} transform={`translate(${leftX}, ${leftY(i)})`}>
-            <rect width={nodeW} height={24} rx={6} fill={categorical.light[i % categorical.light.length]} />
+            <rect width={nodeW} height={24} rx={6} fill={categoricalVar[i % categoricalVar.length]} />
             <text x={nodeW / 2} y={16} textAnchor="middle" fontSize={11} fontWeight={600} fill="#fff">
               {l}
             </text>

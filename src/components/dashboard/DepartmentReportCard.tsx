@@ -1,20 +1,20 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { ScoreBand } from "@/lib/types";
 import type { StudentRecord } from "@/lib/analysis/stats";
 import { mean, round1 } from "@/lib/analysis/stats";
 import { bandForScore, deriveTierThresholds } from "@/lib/analysis/scoreBands";
-import { tierColor } from "@/lib/palette";
+import { tierColorVar } from "@/lib/palette";
 import { Button } from "@/components/ui/Button";
 import { Download, FileImage } from "lucide-react";
 import { exportChartPdf, exportChartPng } from "@/lib/export";
 
 const TIER_META = {
-  support: { label: "Needs support", color: tierColor.support.light, soft: "var(--status-critical-soft)" },
-  developing: { label: "Developing", color: tierColor.developing.light, soft: "var(--status-warning-soft)" },
-  strong: { label: "Strong", color: tierColor.strong.light, soft: "var(--status-good-soft)" },
+  support: { label: "Needs support", color: tierColorVar.support, soft: "var(--status-critical-soft)" },
+  developing: { label: "Developing", color: tierColorVar.developing, soft: "var(--status-warning-soft)" },
+  strong: { label: "Strong", color: tierColorVar.strong, soft: "var(--status-good-soft)" },
 } as const;
 
 function Chip({
@@ -80,13 +80,13 @@ export function DepartmentReportCard({
   const maxTick = Math.max(4, Math.ceil((Math.max(1, ...data.map((d) => d.count)) * 1.25) / 4) * 4);
 
   return (
-    <div ref={ref} className="card p-5 sm:p-6 bg-[var(--surface)] fade-in">
+    <div ref={ref} data-report-card={code} className="card p-5 sm:p-6 bg-[var(--surface)] fade-in">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
           <div className="flex gap-1 mb-2" aria-hidden="true">
-            <span className="h-[3px] w-6 rounded-full" style={{ background: tierColor.strong.light }} />
-            <span className="h-[3px] w-6 rounded-full" style={{ background: tierColor.developing.light }} />
-            <span className="h-[3px] w-6 rounded-full" style={{ background: tierColor.support.light }} />
+            <span className="h-[3px] w-6 rounded-full" style={{ background: tierColorVar.strong }} />
+            <span className="h-[3px] w-6 rounded-full" style={{ background: tierColorVar.developing }} />
+            <span className="h-[3px] w-6 rounded-full" style={{ background: tierColorVar.support }} />
           </div>
           <h3 className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight leading-none">{code}</h3>
           <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)] mt-1.5">{fullName}</p>
@@ -107,8 +107,8 @@ export function DepartmentReportCard({
       <div className="flex flex-wrap gap-2.5 mb-5">
         <Chip label="Total students" value={String(total)} accent="var(--accent)" soft="var(--accent-soft)" />
         <Chip label="Average score" value={String(avg)} accent="var(--violet)" soft="var(--violet-soft)" />
-        <Chip label={`Scored ${strongMin} or above`} value={`${strongCount} (${pct(strongCount)}%)`} accent={tierColor.strong.light} soft="var(--status-good-soft)" />
-        <Chip label={`Scored ${supportMax} or below`} value={`${supportCount} (${pct(supportCount)}%)`} accent={tierColor.support.light} soft="var(--status-critical-soft)" />
+        <Chip label={`Scored ${strongMin} or above`} value={`${strongCount} (${pct(strongCount)}%)`} accent={tierColorVar.strong} soft="var(--status-good-soft)" />
+        <Chip label={`Scored ${supportMax} or below`} value={`${supportCount} (${pct(supportCount)}%)`} accent={tierColorVar.support} soft="var(--status-critical-soft)" />
       </div>
 
       <div className="flex items-center justify-between mb-2">
@@ -129,10 +129,22 @@ export function DepartmentReportCard({
           <XAxis dataKey="label" tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={{ stroke: "var(--border-strong)" }} />
           <YAxis allowDecimals={false} domain={[0, maxTick]} tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} />
           <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid var(--border)" }} cursor={{ fill: "var(--accent-soft)" }} />
-          <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={48} isAnimationActive={false}>
-            <LabelList dataKey="count" position="top" style={{ fontSize: 12, fontWeight: 700, fill: "var(--text-primary)" }} formatter={(v: number) => (v > 0 ? v : "")} />
-            {data.map((d, i) => (
-              <Cell key={i} fill={TIER_META[d.tier].color} />
+          <Bar
+            dataKey="count"
+            radius={[4, 4, 0, 0]}
+            maxBarSize={48}
+            isAnimationActive={false}
+            label={(props: { x?: number; y?: number; width?: number; value?: number }) => {
+              const { x = 0, y = 0, width = 0, value } = props;
+              return (
+                <text key={`label-${x}`} x={x + width / 2} y={y - 6} textAnchor="middle" fontSize={12} fontWeight={700} fill="var(--text-primary)">
+                  {value ? value : ""}
+                </text>
+              );
+            }}
+          >
+            {data.map((d) => (
+              <Cell key={`cell-${d.label}`} fill={TIER_META[d.tier].color} />
             ))}
           </Bar>
         </BarChart>

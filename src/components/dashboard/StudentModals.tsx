@@ -8,7 +8,7 @@ import type { ScoreBand } from "@/lib/types";
 import type { StudentRecord } from "@/lib/analysis/stats";
 import { fmt } from "@/lib/analysis/stats";
 import { exportRowsCsv } from "@/lib/export";
-import { tierColor } from "@/lib/palette";
+import { tierColorVar } from "@/lib/palette";
 
 export function StudentListModal({
   band,
@@ -56,7 +56,7 @@ export function StudentListModal({
                 <td className="px-3 py-2 font-medium text-[var(--text-primary)]">{s.name}</td>
                 <td className="px-3 py-2 tabular text-[var(--text-secondary)]">{s.registration}</td>
                 <td className="px-3 py-2 text-[var(--text-secondary)]">{s.department}</td>
-                <td className="px-3 py-2 tabular font-semibold" style={{ color: tierColor[band.tier].light }}>
+                <td className="px-3 py-2 tabular font-semibold" style={{ color: tierColorVar[band.tier] }}>
                   {s.score}
                 </td>
               </tr>

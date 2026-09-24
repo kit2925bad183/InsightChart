@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { UploadCloud, FileSpreadsheet, AlertTriangle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { parseFile, SUPPORTED_EXTENSIONS } from "@/lib/parsers";
@@ -33,6 +33,13 @@ export function UploadArea({ compact = false }: { compact?: boolean }) {
     },
     [handleFile]
   );
+
+  useEffect(() => {
+    if (!compact) return;
+    const onTrigger = () => inputRef.current?.click();
+    window.addEventListener("insightchart:trigger-upload", onTrigger);
+    return () => window.removeEventListener("insightchart:trigger-upload", onTrigger);
+  }, [compact]);
 
   if (compact) {
     return (

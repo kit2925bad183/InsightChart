@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { StudentRecord } from "@/lib/analysis/stats";
 import { mean, round1 } from "@/lib/analysis/stats";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { categorical } from "@/lib/palette";
+import { categoricalVar } from "@/lib/palette";
 import { Users2, Scale, FileImage } from "lucide-react";
 import { exportChartPng } from "@/lib/export";
 
@@ -27,6 +27,20 @@ export function DepartmentAnalysis({
   const [compareMode, setCompareMode] = useState(false);
   const [compareSet, setCompareSet] = useState<string[]>(() => departments.slice(0, 3));
   const reportRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabValues = ["__all__", ...departments];
+
+  const onTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex: number | null = null;
+    if (e.key === "ArrowRight") nextIndex = (index + 1) % tabValues.length;
+    else if (e.key === "ArrowLeft") nextIndex = (index - 1 + tabValues.length) % tabValues.length;
+    else if (e.key === "Home") nextIndex = 0;
+    else if (e.key === "End") nextIndex = tabValues.length - 1;
+    if (nextIndex === null) return;
+    e.preventDefault();
+    setActive(tabValues[nextIndex]);
+    tabRefs.current[nextIndex]?.focus();
+  };
 
   if (!departments.length) {
     return (
@@ -52,7 +66,7 @@ export function DepartmentAnalysis({
     const scores = recs.map((r) => r.score);
     return {
       dept: d,
-      color: categorical.light[i % categorical.light.length],
+      color: categoricalVar[i % categoricalVar.length],
       total: recs.length,
       avg: scores.length ? round1(mean(scores)) : 0,
       top: [...recs].sort((a, b) => b.score - a.score).slice(0, 3),
@@ -85,27 +99,22 @@ export function DepartmentAnalysis({
 
       {!compareMode && (
         <div role="tablist" aria-label="Department filter" className="flex flex-wrap gap-1.5 mb-4">
-          <button
-            role="tab"
-            aria-selected={active === "__all__"}
-            onClick={() => setActive("__all__")}
-            className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-              active === "__all__" ? "bg-[var(--accent)] text-white border-[var(--accent)]" : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]"
-            }`}
-          >
-            All departments
-          </button>
-          {departments.map((d) => (
+          {tabValues.map((value, i) => (
             <button
-              key={d}
+              key={value}
+              ref={(el) => {
+                tabRefs.current[i] = el;
+              }}
               role="tab"
-              aria-selected={active === d}
-              onClick={() => setActive(d)}
+              tabIndex={active === value ? 0 : -1}
+              aria-selected={active === value}
+              onClick={() => setActive(value)}
+              onKeyDown={(e) => onTabKeyDown(e, i)}
               className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                active === d ? "bg-[var(--accent)] text-white border-[var(--accent)]" : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]"
+                active === value ? "bg-[var(--accent)] text-white border-[var(--accent)]" : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]"
               }`}
             >
-              {d}
+              {value === "__all__" ? "All departments" : value}
             </button>
           ))}
         </div>
@@ -136,7 +145,7 @@ export function DepartmentAnalysis({
               <XAxis dataKey="dept" tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={{ stroke: "var(--border-strong)" }} />
               <YAxis tick={{ fontSize: 11, fill: "var(--text-muted)" }} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid var(--border)" }} cursor={{ fill: "var(--accent-soft)" }} />
-              <Bar dataKey="Average score" radius={[4, 4, 0, 0]} maxBarSize={44} fill={categorical.light[0]} />
+              <Bar dataKey="Average score" radius={[4, 4, 0, 0]} maxBarSize={44} fill={categoricalVar[0]} />
             </BarChart>
           </ResponsiveContainer>
           <p className="text-xs text-[var(--text-muted)] mt-2 flex items-center gap-1.5">

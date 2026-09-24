@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUpDown, Search } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { Card, CardHeader } from "@/components/ui/Card";
@@ -13,6 +13,13 @@ export function DataPreviewTable() {
   const { state, dispatch, activeSheet } = useApp();
   const [page, setPage] = useState(0);
   const [localSearch, setLocalSearch] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onFocusSearch = () => searchRef.current?.focus();
+    window.addEventListener("insightchart:focus-search", onFocusSearch);
+    return () => window.removeEventListener("insightchart:focus-search", onFocusSearch);
+  }, []);
 
   const filteredRows = useMemo(() => {
     if (!activeSheet) return [];
@@ -73,12 +80,13 @@ export function DataPreviewTable() {
             <div className="relative">
               <Search size={13} className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
               <input
+                ref={searchRef}
                 value={localSearch}
                 onChange={(e) => {
                   setLocalSearch(e.target.value);
                   setPage(0);
                 }}
-                placeholder="Search rows…"
+                placeholder="Search rows… (/)"
                 aria-label="Search data rows"
                 className="text-xs rounded-lg border border-[var(--border-strong)] bg-white pl-7 pr-2.5 py-1.5 w-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
               />
