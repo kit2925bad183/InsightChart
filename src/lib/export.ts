@@ -1,0 +1,32 @@
+import * as XLSX from "xlsx";
+
+export async function exportChartPng(node: HTMLElement, filename: string) {
+  const html2canvas = (await import("html2canvas")).default;
+  const canvas = await html2canvas(node, { backgroundColor: "#ffffff", scale: 2 });
+  const link = document.createElement("a");
+  link.download = `${filename}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+export async function exportChartPdf(node: HTMLElement, filename: string) {
+  const html2canvas = (await import("html2canvas")).default;
+  const { jsPDF } = await import("jspdf");
+  const canvas = await html2canvas(node, { backgroundColor: "#ffffff", scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+  const orientation = canvas.width > canvas.height ? "l" : "p";
+  const pdf = new jsPDF({ orientation, unit: "px", format: [canvas.width, canvas.height] });
+  pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+  pdf.save(`${filename}.pdf`);
+}
+
+export function exportRowsCsv(rows: Record<string, unknown>[], filename: string) {
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const csv = XLSX.utils.sheet_to_csv(ws);
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${filename}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
