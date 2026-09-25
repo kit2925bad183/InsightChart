@@ -121,6 +121,30 @@ test.describe("InsightChart smoke test", () => {
     await expect(page.getByText("Reset to sample data?")).not.toBeVisible();
   });
 
+  test("resetting to sample data collapses comparison slots and clears the NL query box", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByText("Compare with another assessment")).toBeVisible();
+
+    const comparisonCard = page.locator("div.card").filter({ hasText: "Compare with another assessment" });
+    const addComparisonBtn = comparisonCard.getByRole("button", { name: "Add another comparison" });
+    await addComparisonBtn.click();
+    await addComparisonBtn.click();
+    await expect(comparisonCard.getByText("New comparison")).toHaveCount(3);
+
+    await page.getByPlaceholder(/Show students below/).fill("Show students below 30 marks");
+    await page.getByRole("button", { name: "Ask" }).click();
+    await expect(page.getByText(/scored below 30/)).toBeVisible();
+
+    // Mock data is loaded, so Reset applies immediately with no confirmation dialog.
+    await page.getByRole("button", { name: "Reset to sample data" }).click();
+
+    await expect(page.getByText("Compare with another assessment", { exact: true })).toHaveCount(1);
+    await expect(page.getByText("Ask about your data", { exact: true })).toHaveCount(1);
+    await expect(comparisonCard.getByText("New comparison")).toHaveCount(1);
+    await expect(page.getByText(/scored below 30/)).not.toBeVisible();
+    await expect(page.getByPlaceholder(/Show students below/)).toHaveValue("");
+  });
+
   test("dark mode toggle sets the theme attribute", async ({ page }) => {
     await page.goto("/");
     const toggle = page.getByRole("button", { name: /Switch to (dark|light) theme/ });

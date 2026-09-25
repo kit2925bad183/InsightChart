@@ -216,7 +216,7 @@ export function DashboardShell() {
             />
 
             <AssessmentComparison
-              key={state.loadNonce}
+              resetToken={state.loadNonce}
               fileALabel={deriveAssessmentTitle(state.source?.fileName ?? "This assessment") || "This assessment"}
               recordsA={records}
               normalizeDepartments={state.normalizeDepartments}
@@ -228,7 +228,7 @@ export function DashboardShell() {
                 <ChartWorkspace />
               </div>
               <div className="space-y-6">
-                <NaturalLanguageBox key={state.loadNonce} records={records} />
+                <NaturalLanguageBox resetToken={state.loadNonce} records={records} />
                 <div ref={insightsRef}>
                   <InsightsPanel records={records} bands={state.scoreBands} supportThreshold={state.thresholdSupport} />
                 </div>

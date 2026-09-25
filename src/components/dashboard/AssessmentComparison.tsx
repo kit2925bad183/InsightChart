@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { UploadCloud, X, FileImage, Plus } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
@@ -16,12 +16,26 @@ export function AssessmentComparison({
   fileALabel,
   recordsA,
   normalizeDepartments,
+  resetToken,
 }: {
   fileALabel: string;
   recordsA: StudentRecord[];
   normalizeDepartments: boolean;
+  /** Bump this (e.g. on a new file upload or Reset) to collapse back to a single
+   * empty slot. Handled via an effect rather than a `key` remount — a `key` change
+   * here was observed to leave the previous instance mounted alongside the new one
+   * instead of replacing it, in this specific sibling-tree shape. */
+  resetToken: number;
 }) {
   const [slotIds, setSlotIds] = useState<string[]>(() => [makeId()]);
+  const isFirstRun = useRef(true);
+  useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+    setSlotIds([makeId()]);
+  }, [resetToken]);
 
   return (
     <Card>

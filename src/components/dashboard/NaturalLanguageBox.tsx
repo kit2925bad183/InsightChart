@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Sparkles, Search, X } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { Card, CardHeader } from "@/components/ui/Card";
@@ -16,10 +16,21 @@ const EXAMPLES = [
   "Show names of students scoring between 51 and 60",
 ];
 
-export function NaturalLanguageBox({ records }: { records: StudentRecord[] }) {
+export function NaturalLanguageBox({ records, resetToken }: { records: StudentRecord[]; resetToken: number }) {
   const { dispatch } = useApp();
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<{ summary: string; students?: StudentRecord[] } | null>(null);
+
+  // Clear on a new file upload / Reset — see the matching note in AssessmentComparison.
+  const isFirstRun = useRef(true);
+  useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+    setQuery("");
+    setResult(null);
+  }, [resetToken]);
 
   const departments = Array.from(new Set(records.map((r) => r.department)));
 
