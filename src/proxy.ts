@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb } from "@/server/db";
 import { SESSION_COOKIE, getSessionByToken } from "@/server/auth/sessions";
-import { FIRST_LOGIN_PAGE, canAccessPage, isPublicPage } from "@/lib/auth/permissions";
+import { FIRST_LOGIN_PAGE, canAccessPage, isPublicPage, pagePermission } from "@/lib/auth/permissions";
 
 // Page-level gate. Runs on the Node.js runtime (the Next 16 default for proxy), so it
 // checks the real session in the database rather than trusting the cookie's presence.
@@ -39,7 +39,8 @@ export async function proxy(req: NextRequest) {
   if (pathname === "/") return NextResponse.next();
 
   if (!canAccessPage(ctx.user.role, pathname)) {
-    return NextResponse.rewrite(new URL("/forbidden", req.url), { status: 403 });
+    // Known page the role may not open → 403; an address that isn't a page at all → 404.
+    return NextResponse.rewrite(new URL("/forbidden", req.url), { status: pagePermission(pathname) ? 403 : 404 });
   }
   return NextResponse.next();
 }

@@ -35,6 +35,8 @@ async function openPostgres(url: string): Promise<Db> {
     prepare: false,
     max: Number(process.env.DATABASE_POOL_MAX) || 5,
     idle_timeout: 20,
+    // Recycle connections regularly: the pooler may drop long-lived ones on its side.
+    max_lifetime: 5 * 60,
     connect_timeout: 15,
     ssl: /localhost|127\.0\.0\.1/.test(url) ? false : "require",
     types: { int8: { to: INT8, from: [INT8], serialize: (x: number) => String(x), parse: toNumber } },
@@ -56,7 +58,49 @@ async function openPostgres(url: string): Promise<Db> {
       close: () => sql.end({ timeout: 5 }),
     };
   };
-  return wrap(sql as unknown as Runner, (fn) => sql.begin((t) => fn(t as unknown as Runner)) as never);
+  const db = wrap(sql as unknown as Runner, (fn) => sql.begin((t) => fn(t as unknown as Runner)) as never);
+  // Top-level statements and whole transactions get one retry when the *connection* fails
+  // (never on a real SQL error). A failed transaction was rolled back, so retrying it is safe.
+  return {
+    ...db,
+    query: (q, p) => withReconnect(() => db.query(q, p)),
+    one: (q, p) => withReconnect(() => db.one(q, p)),
+    exec: (q) => withReconnect(() => db.exec(q)),
+    tx: (fn) => withReconnect(() => db.tx(fn)),
+  };
+}
+
+// Errors meaning the connection broke (the pooler closed an idle connection, a network
+// blip, the database restarting) rather than anything wrong with the query itself.
+const CONNECTION_ERRORS = new Set([
+  "CONNECTION_CLOSED",
+  "CONNECTION_ENDED",
+  "CONNECTION_DESTROYED",
+  "CONNECT_TIMEOUT",
+  "ECONNRESET",
+  "ECONNREFUSED",
+  "EPIPE",
+  "ETIMEDOUT",
+  "EAI_AGAIN",
+  "57P01", // admin_shutdown
+  "57P02", // crash_shutdown
+  "57P03", // cannot_connect_now
+]);
+
+export function isConnectionError(err: unknown): boolean {
+  const code = (err as { code?: string })?.code ?? "";
+  return CONNECTION_ERRORS.has(code) || code.startsWith("08"); // SQLSTATE class 08: connection exception
+}
+
+async function withReconnect<T>(run: () => Promise<T>): Promise<T> {
+  try {
+    return await run();
+  } catch (err) {
+    if (!isConnectionError(err)) throw err;
+    console.warn("[insightchart] Database connection lost, retrying once:", (err as { code?: string }).code);
+    await new Promise((r) => setTimeout(r, 200));
+    return run();
+  }
 }
 
 /** Shows where a connection string points without revealing its password. */

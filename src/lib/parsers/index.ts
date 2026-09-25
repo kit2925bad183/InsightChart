@@ -1,9 +1,7 @@
 import type { ParsedSource } from "../types";
-import { parseXlsx, parseCsv } from "./xlsx";
-import { parseTxt } from "./txt";
-import { parseDocx } from "./docx";
-import { parsePdf } from "./pdf";
-import { parseImage } from "./image";
+// Each format's reader is loaded only when a file of that type is picked: the Excel,
+// Word, PDF and OCR libraries are large, and most visits (and every view-only role)
+// never upload anything.
 
 export const SUPPORTED_EXTENSIONS = [".xlsx", ".xls", ".csv", ".pdf", ".docx", ".txt", ".png", ".jpg", ".jpeg", ".webp"];
 
@@ -36,12 +34,12 @@ export async function parseFile(file: File): Promise<ParsedSource> {
 
   try {
     let result: ParsedSource;
-    if (name.endsWith(".csv")) result = await parseCsv(file);
-    else if (name.endsWith(".xlsx") || name.endsWith(".xls")) result = await parseXlsx(file);
-    else if (name.endsWith(".docx")) result = await parseDocx(file);
-    else if (name.endsWith(".pdf")) result = await parsePdf(file);
-    else if (name.endsWith(".txt")) result = await parseTxt(file);
-    else if (/\.(png|jpe?g|webp|gif|bmp)$/.test(name)) result = await parseImage(file);
+    if (name.endsWith(".csv")) result = await (await import("./xlsx")).parseCsv(file);
+    else if (name.endsWith(".xlsx") || name.endsWith(".xls")) result = await (await import("./xlsx")).parseXlsx(file);
+    else if (name.endsWith(".docx")) result = await (await import("./docx")).parseDocx(file);
+    else if (name.endsWith(".pdf")) result = await (await import("./pdf")).parsePdf(file);
+    else if (name.endsWith(".txt")) result = await (await import("./txt")).parseTxt(file);
+    else if (/\.(png|jpe?g|webp|gif|bmp)$/.test(name)) result = await (await import("./image")).parseImage(file);
     else
       return {
         kind: "txt",

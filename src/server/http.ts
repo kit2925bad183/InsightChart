@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { z, ZodError, type ZodType } from "zod";
-import { getDb } from "./db";
+import { getDb, isConnectionError } from "./db";
+import { randomBytes } from "node:crypto";
 import { SESSION_COOKIE, getSessionByToken, type SessionContext } from "./auth/sessions";
 import { can, type Permission } from "@/lib/auth/permissions";
 import { configuredSiteUrl } from "@/lib/siteUrl";
@@ -53,8 +54,21 @@ export function route<C = unknown>(fn: Handler<C>): Handler<C> {
         const where = first?.path.length ? `${first.path.join(".")}: ` : "";
         return json({ error: `${where}${first?.message ?? "Invalid request."}`, code: "invalid_request" }, { status: 400 });
       }
-      console.error("[insightchart] Unhandled API error:", err);
-      return json({ error: "Something went wrong on the server. Please try again.", code: "server_error" }, { status: 500 });
+      // A short reference ties what the person sees to this log line, so a report like
+      // "Ref K7Q2M9" leads straight to the cause.
+      const ref = randomBytes(4).toString("hex").toUpperCase().slice(0, 6);
+      console.error(`[insightchart] Unhandled API error (ref ${ref}) ${req.method} ${new URL(req.url).pathname}:`, err);
+      const busy = isConnectionError(err);
+      return json(
+        {
+          error: busy
+            ? `The database is temporarily unreachable. Please try again in a moment. (Ref: ${ref})`
+            : `Something went wrong on the server. Please try again. (Ref: ${ref})`,
+          code: busy ? "database_unavailable" : "server_error",
+          ref,
+        },
+        { status: busy ? 503 : 500 }
+      );
     }
   };
 }

@@ -1,5 +1,3 @@
-import * as XLSX from "xlsx";
-
 function currentSurfaceColor(): string {
   const v = getComputedStyle(document.documentElement).getPropertyValue("--surface").trim();
   return v || "#ffffff";
@@ -57,12 +55,34 @@ export function neutraliseFormula(v: unknown): unknown {
   return typeof v === "string" && FORMULA_PREFIX.test(v) ? `'${v}` : v;
 }
 
+function csvCell(v: unknown): string {
+  if (v === null || v === undefined) return "";
+  const s = String(neutraliseFormula(v));
+  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+/** Rows → CSV text. Columns are every key that appears, in first-seen order. Written by
+ * hand (not with SheetJS) so downloading a CSV doesn't pull a spreadsheet library into
+ * every page. */
+export function rowsToCsv(rows: Record<string, unknown>[]): string {
+  const headers: string[] = [];
+  const seen = new Set<string>();
+  for (const r of rows) {
+    for (const k of Object.keys(r)) {
+      if (!seen.has(k)) {
+        seen.add(k);
+        headers.push(k);
+      }
+    }
+  }
+  const lines = [headers.map(csvCell).join(",")];
+  for (const r of rows) lines.push(headers.map((h) => csvCell(r[h])).join(","));
+  return lines.join("\r\n") + "\r\n";
+}
+
 export function exportRowsCsv(rows: Record<string, unknown>[], filename: string) {
-  const safe = rows.map((r) => Object.fromEntries(Object.entries(r).map(([k, v]) => [neutraliseFormula(k) as string, neutraliseFormula(v)])));
-  const ws = XLSX.utils.json_to_sheet(safe);
-  const csv = XLSX.utils.sheet_to_csv(ws);
   // The byte-order mark makes Excel read UTF-8, so names in Tamil and other scripts open correctly.
-  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob(["﻿" + rowsToCsv(rows)], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = `${filename}.csv`;
