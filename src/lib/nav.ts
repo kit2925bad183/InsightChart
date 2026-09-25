@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   UserCog,
   TrendingUp,
+  ListFilter,
   type LucideIcon,
 } from "lucide-react";
 import { can, type Permission, type Role } from "./auth/permissions";
@@ -30,6 +31,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, permission: "data:view" },
   { href: "/upload", label: "Upload & Data Preview", readOnlyLabel: "Data Preview", icon: UploadCloud, permission: "data:view" },
   { href: "/students", label: "Student Explorer", icon: Users2, permission: "data:view" },
+  { href: "/filter", label: "Data Filter", icon: ListFilter, permission: "data:view" },
   { href: "/student-performance", label: "Student Performance", icon: TrendingUp, permission: "data:view" },
   { href: "/charts", label: "Interactive Charts", icon: PieChart, permission: "data:view" },
   { href: "/departments", label: "Department Comparison", icon: Scale, permission: "analysis:departments" },

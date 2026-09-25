@@ -79,6 +79,7 @@ const PAGE_RULES: { prefix: string; permission: Permission }[] = [
   { prefix: "/upload", permission: "data:view" },
   { prefix: "/students", permission: "data:view" },
   { prefix: "/student-performance", permission: "data:view" },
+  { prefix: "/filter", permission: "data:view" },
   { prefix: "/charts", permission: "data:view" },
   { prefix: "/reports", permission: "reports:download" },
   { prefix: "/tasks", permission: "data:view" },

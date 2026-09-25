@@ -126,10 +126,13 @@ test.describe("InsightChart smoke test", () => {
       buffer: Buffer.from(SAMPLE_CSV, "utf-8"),
     });
     await page.waitForSelector(".recharts-bar-rectangle");
-    const bar = page.locator("svg .recharts-bar-rectangle path").first();
-    await bar.click({ force: true });
     const dialog = page.getByRole("dialog").filter({ has: page.locator("table") });
-    await expect(dialog).toBeVisible();
+    // The sample-data chart is on screen before the upload lands and the chart redraws, so
+    // the first bar found can vanish mid-click — retry until the drill-down opens.
+    await expect(async () => {
+      await page.locator("svg .recharts-bar-rectangle path").first().click({ force: true, timeout: 2000 });
+      await expect(dialog).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 15_000 });
     const rowCount = await dialog.locator("table tbody tr").count();
     expect(rowCount).toBeGreaterThan(0);
   });
@@ -331,6 +334,54 @@ test.describe("InsightChart smoke test", () => {
     await page.getByRole("button", { name: "Bars" }).click();
     await expect(page).toHaveURL(/view=bar/);
     await expect(page.getByRole("img", { name: /Bar chart of Zed Tester/ })).toBeVisible();
+  });
+
+  test("Data Filter builds filters from the uploaded CSV's columns", async ({ page }) => {
+    const csv = [
+      "Name,Register Number,Department,Section,Score",
+      "Asha,21CS001,CSE,A,78",
+      "Bala,21CS009,cse,B,42",
+      "Chitra,21CS010,ECE,A,91",
+      "Dinesh,21CS025,ECE,B,55",
+      "Esther,21CS100,MECH,A,67",
+      "Farhan,21CS101,MECH,B,30",
+      "Gita,21CS102,CSE,A,88",
+      "Hari,21CS103,ECE,B,61",
+    ].join("\n");
+    await page.goto("/upload");
+    await page.locator('input[type="file"]').first().setInputFiles({ name: "unit-test-1.csv", mimeType: "text/csv", buffer: Buffer.from(csv, "utf-8") });
+    await expect(page.getByText("unit-test-1.csv").first()).toBeVisible();
+    await navTo(page, "/filter");
+
+    const results = page.getByRole("table", { name: "Filtered records" });
+    await expect(page.getByText("8 of 8 rows")).toBeVisible();
+    // Every column of the file got a filter.
+    for (const col of ["Register Number", "Name", "Department", "Section", "Score"]) await expect(page.getByTestId(`filter-${col}`)).toBeVisible();
+
+    // Department tick-list uses the cleaned-up names ("cse" counts as CSE).
+    await page.getByTestId("filter-Department").getByRole("checkbox", { name: /^CSE/ }).check();
+    await expect(page.getByText("3 of 8 rows")).toBeVisible();
+    await expect(results.getByRole("row")).toHaveCount(4);
+
+    // Register number range on top.
+    await page.getByTestId("filter-Department").getByRole("button", { name: "Clear selection" }).click();
+    await page.getByLabel("Register Number from").fill("21CS009");
+    await page.getByLabel("Register Number to").fill("21CS100");
+    await expect(page.getByText("4 of 8 rows")).toBeVisible();
+
+    // Score range narrows further; the chip shows it and removes it.
+    await page.getByTestId("filter-Score").getByRole("button").first().click();
+    await page.getByLabel("Score minimum").fill("60");
+    await expect(page.getByText("2 of 8 rows")).toBeVisible();
+    await expect(results).toContainText("Chitra");
+    await expect(results).toContainText("Esther");
+    await page.getByRole("button", { name: "Remove filter Score: ≥ 60" }).click();
+    await expect(page.getByText("4 of 8 rows")).toBeVisible();
+
+    await page.getByLabel("Search every column").fill("dinesh");
+    await expect(page.getByText("1 of 8 rows")).toBeVisible();
+    await page.getByRole("button", { name: "Clear all" }).click();
+    await expect(page.getByText("8 of 8 rows")).toBeVisible();
   });
 
   test("column insights shows answer distribution for an unmapped column", async ({ page }) => {
