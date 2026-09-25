@@ -6,7 +6,7 @@ import { LogIn, Crown, ShieldCheck, Building2, GraduationCap, ArrowLeft, Chevron
 import { Button } from "@/components/ui/Button";
 import { FormMessage, PasswordField, TextField } from "@/components/auth/fields";
 import { ROLE_LABELS, type Role } from "@/lib/auth/permissions";
-import { api } from "@/lib/api";
+import { api, ApiRequestError } from "@/lib/api";
 import { safeRedirect } from "@/lib/safeRedirect";
 
 const ROLE_CHOICES: { role: Role; icon: LucideIcon; description: string }[] = [
@@ -22,15 +22,20 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** Set when the password was right but the wrong role was picked. */
+  const [accountRole, setAccountRole] = useState<Role | null>(null);
 
-  const submit = async () => {
+  const submit = async (asRole: Role | null = role) => {
     setBusy(true);
     setError(null);
+    setAccountRole(null);
     try {
-      const r = await api<{ stage: "pending" | "active" }>("/api/auth/login", { method: "POST", body: { identifier, password, role }, redirectOn401: false });
+      const r = await api<{ stage: "pending" | "active" }>("/api/auth/login", { method: "POST", body: { identifier, password, role: asRole }, redirectOn401: false });
       window.location.assign(r.stage === "pending" ? "/first-login" : safeRedirect(next));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in failed.");
+      const correct = err instanceof ApiRequestError && err.code === "role_mismatch" ? (err.data?.accountRole as Role | undefined) : undefined;
+      if (correct && correct in ROLE_LABELS) setAccountRole(correct);
       setBusy(false);
     }
   };
@@ -89,6 +94,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
           onClick={() => {
             setRole(null);
             setError(null);
+            setAccountRole(null);
           }}
           className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         >
@@ -97,6 +103,20 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
       </div>
       {notice && <FormMessage tone="success">{notice}</FormMessage>}
       {error && <FormMessage tone="error">{error}</FormMessage>}
+      {accountRole && (
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          disabled={busy}
+          onClick={() => {
+            setRole(accountRole);
+            submit(accountRole);
+          }}
+        >
+          <LogIn size={15} /> Sign in as {ROLE_LABELS[accountRole]} instead
+        </Button>
+      )}
       <TextField label="Username or email" autoComplete="username" required value={identifier} onChange={(e) => setIdentifier(e.target.value)} disabled={busy} autoFocus />
       <PasswordField label="Password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={busy} />
       <Button type="submit" variant="primary" className="w-full" disabled={busy || !identifier || !password}>

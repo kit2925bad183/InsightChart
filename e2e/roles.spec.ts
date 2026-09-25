@@ -102,8 +102,11 @@ test.describe("signed out", () => {
     await expect(roles.nth(2)).toContainText("Head of Department");
     await expect(roles.nth(3)).toContainText("Faculty");
     await signIn(page, "e2e.admin", "E2E-admin-Pass-2026", "Faculty");
-    await expect(formAlert(page)).toContainText("isn't a Faculty account");
+    await expect(formAlert(page)).toContainText("isn't a Faculty account — it's an Administrator account");
     await expect(page).toHaveURL(/\/login/);
+    // One click switches to the right role and signs in with what was already typed.
+    await page.getByRole("button", { name: "Sign in as Administrator instead" }).click();
+    await expect(page).toHaveURL(/\/dashboard$/);
   });
 
   test("forgot password gives the same answer for an unknown email", async ({ page }) => {

@@ -47,7 +47,14 @@ export async function login(db: Db, input: { identifier: string; password: strin
   // The sign-in page asks which kind of user is signing in. Checked only after the
   // password matched, so it never reveals anything about accounts to a stranger.
   if (input.role && input.role !== user.role) {
-    throw new ApiError(403, `This isn't a ${ROLE_LABELS[input.role]} account. Go back and choose ${ROLE_LABELS[user.role]}.`, "role_mismatch");
+    const article = (label: string) => (/^[AEIOU]/i.test(label) ? "an" : "a");
+    throw new ApiError(
+      403,
+      `This isn't ${article(ROLE_LABELS[input.role])} ${ROLE_LABELS[input.role]} account — it's ${article(ROLE_LABELS[user.role])} ${ROLE_LABELS[user.role]} account.`,
+      "role_mismatch",
+      // Lets the sign-in page offer a one-click switch to the right role.
+      { accountRole: user.role }
+    );
   }
 
   await clearRateLimit(db, `login:id:${idKey}`);

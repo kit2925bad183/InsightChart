@@ -99,7 +99,8 @@ describe("login", () => {
   it("checks the role chosen on the sign-in page, only after the password is right", async () => {
     await addUser(db, { username: "admin123", role: "ADMINISTRATOR", password: "Right#Pass1" });
     const wrongRole = await expectApiError(login(db, { identifier: "admin123", password: "Right#Pass1", role: "FACULTY" }, meta), "role_mismatch");
-    expect(wrongRole.message).toMatch(/Administrator/);
+    expect(wrongRole.message).toBe("This isn't a Faculty account — it's an Administrator account.");
+    expect(wrongRole.extra).toEqual({ accountRole: "ADMINISTRATOR" });
     // A wrong password with a wrong role still gives the generic error — no role leak.
     await expectApiError(login(db, { identifier: "admin123", password: "nope", role: "FACULTY" }, meta), "invalid_credentials");
     const ok = await login(db, { identifier: "admin123", password: "Right#Pass1", role: "ADMINISTRATOR" }, meta);
