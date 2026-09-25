@@ -4,6 +4,7 @@ const SCORE_WORDS = /\b(score|marks?|mark|percentage|percent|%|grade|points?|res
 const NAME_WORDS = /\b(name|student|candidate|employee)\b/i;
 const REG_WORDS = /\b(reg(istration)?|roll|id|enrollment|enrolment|number)\b/i;
 const DEPT_WORDS = /\b(department|dept|branch|team|group|division|course|class|section)\b/i;
+const SUBJECT_WORDS = /\b(subject|paper|topic|module)\b/i;
 const DATE_WORDS = /\b(date|day|timestamp|time)\b/i;
 const STATUS_WORDS = /\b(status|result|outcome|qualif)\b/i;
 
@@ -49,6 +50,8 @@ export function inferColumns(sheet: DataSheet): ColumnProfile[] {
       role = "date";
     } else if (DEPT_WORDS.test(key) && !isNumeric) {
       role = "department";
+    } else if (SUBJECT_WORDS.test(key) && !isNumeric) {
+      role = "subject";
     } else if (STATUS_WORDS.test(key) && !isNumeric) {
       role = "status";
     } else if (isNumeric && SCORE_WORDS.test(key)) {
@@ -104,6 +107,7 @@ export function detectMapping(sheet: DataSheet, columns: ColumnProfile[]) {
   const name = columns.find((c) => c.role === "name")?.key;
   const registration = columns.find((c) => c.role === "registration")?.key;
   const department = columns.find((c) => c.role === "department")?.key;
+  const subject = columns.find((c) => c.role === "subject")?.key;
   const dateColumn = columns.find((c) => c.role === "date")?.key;
   const category = department ?? columns.find((c) => c.role === "category")?.key;
 
@@ -113,6 +117,7 @@ export function detectMapping(sheet: DataSheet, columns: ColumnProfile[]) {
     studentName: name,
     registration,
     department,
+    subject,
     dateColumn,
   };
 }

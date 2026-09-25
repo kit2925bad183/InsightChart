@@ -3,6 +3,8 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorListener } from "@/components/ErrorListener";
+import { AppProvider } from "@/context/AppContext";
+import { AppShell } from "@/components/shell/AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -33,13 +35,25 @@ try {
 } catch (e) {}
 `;
 
+// Same pre-hydration precedent as THEME_INIT_SCRIPT — sets the sidebar's collapsed/
+// expanded attribute before paint so the sidebar width never flashes on load.
+const SIDEBAR_INIT_SCRIPT = `
+try {
+  var c = localStorage.getItem("insightchart-sidebar-collapsed");
+  document.documentElement.setAttribute("data-sidebar", c === "1" ? "collapsed" : "expanded");
+} catch (e) {}
+`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <Script id="sidebar-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
         <ErrorListener />
-        {children}
+        <AppProvider>
+          <AppShell>{children}</AppShell>
+        </AppProvider>
         <Analytics />
         <SpeedInsights />
       </body>

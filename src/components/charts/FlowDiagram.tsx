@@ -10,7 +10,17 @@ const TIER_COLOR: Record<string, string> = {
   "Needs support": tierColorVar.support,
 };
 
-export function FlowDiagram({ left, right, links }: { left: string[]; right: string[]; links: FlowLink[] }) {
+export function FlowDiagram({
+  left,
+  right,
+  links,
+  onSelectLink,
+}: {
+  left: string[];
+  right: string[];
+  links: FlowLink[];
+  onSelectLink?: (link: FlowLink) => void;
+}) {
   const id = useId();
   const [hovered, setHovered] = useState<number | null>(null);
   const width = 640;
@@ -59,6 +69,9 @@ export function FlowDiagram({ left, right, links }: { left: string[]; right: str
                 strokeWidth={strokeWidth}
                 onMouseEnter={() => setHovered(i)}
                 onMouseLeave={() => setHovered(null)}
+                onClick={() => onSelectLink?.(link)}
+                onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onSelectLink?.(link)}
+                role={onSelectLink ? "button" : undefined}
                 tabIndex={0}
                 aria-label={`${link.source} to ${link.target}: ${link.value} students`}
                 style={{ cursor: "pointer", transition: "stroke-opacity 0.15s" }}

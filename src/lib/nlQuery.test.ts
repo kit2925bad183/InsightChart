@@ -8,6 +8,10 @@ describe("parseNlQuery", () => {
     expect(parseNlQuery("Show students below 30 marks", DEPTS)).toEqual({ type: "filter-below", value: 30 });
   });
 
+  it("scopes a below-threshold filter to a mentioned department", () => {
+    expect(parseNlQuery("Show CSBS students below 30 marks", DEPTS)).toEqual({ type: "filter-below", value: 30, department: "CSBS" });
+  });
+
   it("parses an above-threshold filter", () => {
     expect(parseNlQuery("Show students above 60", DEPTS)).toEqual({ type: "filter-above", value: 60 });
   });

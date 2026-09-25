@@ -62,6 +62,12 @@ export function MappingPanel() {
           onChange={(v) => setMapping({ department: v })}
           options={toOptions(headers)}
         />
+        <Combobox
+          label="Subject"
+          value={state.mapping.subject}
+          onChange={(v) => setMapping({ subject: v })}
+          options={toOptions(headers)}
+        />
         <Select
           label="Chart type"
           value={state.chartType}

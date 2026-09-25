@@ -24,6 +24,7 @@ export type ColumnRole =
   | "name"
   | "registration"
   | "department"
+  | "subject"
   | "score"
   | "date"
   | "status"
@@ -51,6 +52,7 @@ export interface ColumnMapping {
   studentName?: string;
   registration?: string;
   department?: string;
+  subject?: string;
   dateColumn?: string;
   scoreMin?: number;
   scoreMax?: number;

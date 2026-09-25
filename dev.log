@@ -1,0 +1,1216 @@
+▲ Next.js 16.3.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.254.24.116:3000
+✓ Ready in 583ms
+✓ Running next.config.ts took 33ms
+
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at completeWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at completeUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9452:23)
+    at performUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9387:28)
+    at workLoopSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)
+    at renderRootSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)
+    at performWorkOnRoot (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)
+    at performWorkOnRootViaSchedulerTask (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10085:9)
+    at MessagePort.performWorkUntilDeadline (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <__next_root_layout_boundary__>
+      <SegmentViewNode type="layout" pagePath="layout.tsx">
+        <SegmentTrieNode>
+        <link>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <RootLayout>
+          <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+            <body className="min-h-full...">
+              <Script>
+              <Script>
+              <ErrorListener>
+              <AppProvider>
+                <AppShell>
+                  <div className="min-h-full...">
+                    <Sidebar>
+                    <MobileSidebarDrawer>
+                    <div className="flex-1 fle...">
+                      <Topbar onOpenMobileMenu={function onOpenMobileMenu}>
+                        <header className="sticky top..." style={{height:"va..."}}>
+                          <div className="h-full px-...">
+                            <div>
+                            <div className="flex items...">
+                              <div>
+                              <ThemeToggle>
+                                <button
+                                  onClick={function toggle}
++                                 aria-label="Switch to light theme"
+-                                 aria-label="Switch to dark theme"
++                                 aria-pressed={true}
+-                                 aria-pressed="false"
+                                  className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]..."
+                                >
+                                  <Sun size={16}>
+                                    <svg
+                                      ref={null}
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={16}
+                                      height={16}
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
++                                     className="lucide lucide-sun"
+-                                     className="lucide lucide-moon"
+                                    >
++                                     <circle cx="12" cy="12" r="4">
+-                                     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z">
+                                      ...
+                              ...
+                      ...
+              ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at throwOnHydrationMismatch (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3120:56)
+    at beginWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6585:918)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at performUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9385:97)
+    at workLoopConcurrentByScheduler (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9381:58)
+    at renderRootConcurrent (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9364:71)
+    at performWorkOnRoot (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8891:150)
+    at performWorkOnRootViaSchedulerTask (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10085:9)
+    at MessagePort.performWorkUntilDeadline (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64)
+    at circle (<anonymous>)
+    at <unknown> (file://D:/Insightchart/.next/dev/static/chunks/node_modules_00341pj._.js:2930:220)
+    at Array.map (<anonymous>)
+    at <unknown> (file://D:/Insightchart/.next/dev/static/chunks/node_modules_00341pj._.js:2930:21)
+    at Sun (file://D:/Insightchart/.next/dev/static/chunks/node_modules_00341pj._.js:2957:411)
+    at ThemeToggle (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:98:230)
+    at Topbar (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:1319:227)
+    at AppShell (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:199:223)
+    at RootLayout (about://React/Server/D:%5CInsightchart%5C.next%5Cdev%5Cserver%5Cchunks%5Cssr%5C_1sp8a1-._.js?6:200:282)
+[browser] [InsightChart] InsightsPanel is not defined {
+  digest: [90mundefined[39m,
+  source: [32m'error-boundary'[39m,
+  stack: [32m'ReferenceError: InsightsPanel is not defined\n'[39m +
+    [32m'    at DashboardPage (http://localhost:3000/_next/static/chunks/src_0h1jc8h._.js?id=%255Bproject%255D/src/app/(app)/dashboard/page.tsx+%255Bapp-client%255D+(ecmascript):85:238)\n'[39m +
+    [32m'    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14894:24)\n'[39m +
+    [32m'    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4425:24)\n'[39m +
+    [32m'    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:5892:21)\n'[39m +
+    [32m'    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6518:24)\n'[39m +
+    [32m'    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)\n'[39m +
+    [32m'    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9385:97)\n'[39m +
+    [32m'    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)\n'[39m +
+    [32m'    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)\n'[39m +
+    [32m'    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)\n'[39m +
+    [32m'    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10093:9)\n'[39m +
+    [32m'    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10009:316)\n'[39m +
+    [32m'    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10030:106)\n'[39m +
+    [32m'    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10104:158'[39m
+} 
+    at reportError (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+    at RouteError.useEffect (file://D:/Insightchart/.next/dev/static/chunks/_1q5vk5h._.js:65:155)
+    at Object.react_stack_bottom_frame (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:22)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at commitHookEffectListMount (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:167)
+    at commitHookPassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7117:60)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8519:33)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8523:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8523:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316) (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+[browser] [InsightChart] InsightsPanel is not defined {
+  digest: [90mundefined[39m,
+  source: [32m'error-boundary'[39m,
+  stack: [32m'ReferenceError: InsightsPanel is not defined\n'[39m +
+    [32m'    at DashboardPage (http://localhost:3000/_next/static/chunks/src_0h1jc8h._.js?id=%255Bproject%255D/src/app/(app)/dashboard/page.tsx+%255Bapp-client%255D+(ecmascript):85:238)\n'[39m +
+    [32m'    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14894:24)\n'[39m +
+    [32m'    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4425:24)\n'[39m +
+    [32m'    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:5892:21)\n'[39m +
+    [32m'    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6518:24)\n'[39m +
+    [32m'    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)\n'[39m +
+    [32m'    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9385:97)\n'[39m +
+    [32m'    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)\n'[39m +
+    [32m'    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)\n'[39m +
+    [32m'    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)\n'[39m +
+    [32m'    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10093:9)\n'[39m +
+    [32m'    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10009:316)\n'[39m +
+    [32m'    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10030:106)\n'[39m +
+    [32m'    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10104:158'[39m
+} 
+    at reportError (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+    at RouteError.useEffect (file://D:/Insightchart/.next/dev/static/chunks/_1q5vk5h._.js:65:155)
+    at Object.react_stack_bottom_frame (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:22)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at commitHookEffectListMount (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:167)
+    at commitHookPassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7117:60)
+    at reconnectPassiveEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8609:17)
+    at doubleInvokeEffectsOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9947:189)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:79)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147) (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at completeWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at completeUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9452:23)
+    at performUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9387:28)
+    at workLoopSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)
+    at renderRootSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)
+    at performWorkOnRoot (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)
+    at performWorkOnRootViaSchedulerTask (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10085:9)
+    at MessagePort.performWorkUntilDeadline (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <__next_root_layout_boundary__>
+      <SegmentViewNode type="layout" pagePath="layout.tsx">
+        <SegmentTrieNode>
+        <link>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <RootLayout>
+          <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+            <body className="min-h-full...">
+              <Script>
+              <Script>
+              <ErrorListener>
+              <AppProvider>
+                <AppShell>
+                  <div className="min-h-full...">
+                    <Sidebar>
+                    <MobileSidebarDrawer>
+                    <div className="flex-1 fle...">
+                      <Topbar onOpenMobileMenu={function onOpenMobileMenu}>
+                        <header className="sticky top..." style={{height:"va..."}}>
+                          <div className="h-full px-...">
+                            <div>
+                            <div className="flex items...">
+                              <div>
+                              <ThemeToggle>
+                                <button
+                                  onClick={function toggle}
++                                 aria-label="Switch to light theme"
+-                                 aria-label="Switch to dark theme"
++                                 aria-pressed={true}
+-                                 aria-pressed="false"
+                                  className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]..."
+                                >
+                                  <Sun size={16}>
+                                    <svg
+                                      ref={null}
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={16}
+                                      height={16}
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
++                                     className="lucide lucide-sun"
+-                                     className="lucide lucide-moon"
+                                    >
++                                     <circle cx="12" cy="12" r="4">
+-                                     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z">
+                                      ...
+                              ...
+                      ...
+              ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at throwOnHydrationMismatch (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3120:56)
+    at beginWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6585:918)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at performUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9385:97)
+    at workLoopConcurrentByScheduler (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9381:58)
+    at renderRootConcurrent (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9364:71)
+    at performWorkOnRoot (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8891:150)
+    at performWorkOnRootViaSchedulerTask (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10085:9)
+    at MessagePort.performWorkUntilDeadline (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64)
+    at circle (<anonymous>)
+    at <unknown> (file://D:/Insightchart/.next/dev/static/chunks/node_modules_00341pj._.js:2930:220)
+    at Array.map (<anonymous>)
+    at <unknown> (file://D:/Insightchart/.next/dev/static/chunks/node_modules_00341pj._.js:2930:21)
+    at Sun (file://D:/Insightchart/.next/dev/static/chunks/node_modules_00341pj._.js:2957:411)
+    at ThemeToggle (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:98:230)
+    at Topbar (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:1319:227)
+    at AppShell (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:199:223)
+    at RootLayout (about://React/Server/D:%5CInsightchart%5C.next%5Cdev%5Cserver%5Cchunks%5Cssr%5C_1sp8a1-._.js?6:200:282)
+[browser] [InsightChart] InsightsPanel is not defined {
+  digest: [90mundefined[39m,
+  source: [32m'error-boundary'[39m,
+  stack: [32m'ReferenceError: InsightsPanel is not defined\n'[39m +
+    [32m'    at DashboardPage (http://localhost:3000/_next/static/chunks/src_0h1jc8h._.js?id=%255Bproject%255D/src/app/(app)/dashboard/page.tsx+%255Bapp-client%255D+(ecmascript):85:238)\n'[39m +
+    [32m'    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14894:24)\n'[39m +
+    [32m'    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4425:24)\n'[39m +
+    [32m'    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:5892:21)\n'[39m +
+    [32m'    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6518:24)\n'[39m +
+    [32m'    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)\n'[39m +
+    [32m'    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9385:97)\n'[39m +
+    [32m'    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)\n'[39m +
+    [32m'    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)\n'[39m +
+    [32m'    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)\n'[39m +
+    [32m'    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10093:9)\n'[39m +
+    [32m'    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10009:316)\n'[39m +
+    [32m'    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10030:106)\n'[39m +
+    [32m'    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10104:158'[39m
+} 
+    at reportError (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+    at RouteError.useEffect (file://D:/Insightchart/.next/dev/static/chunks/_1q5vk5h._.js:65:155)
+    at Object.react_stack_bottom_frame (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:22)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at commitHookEffectListMount (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:167)
+    at commitHookPassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7117:60)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8519:33)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8523:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8580:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8523:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316)
+    at commitPassiveMountOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8518:17)
+    at recursivelyTraversePassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8506:316) (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+[browser] [InsightChart] InsightsPanel is not defined {
+  digest: [90mundefined[39m,
+  source: [32m'error-boundary'[39m,
+  stack: [32m'ReferenceError: InsightsPanel is not defined\n'[39m +
+    [32m'    at DashboardPage (http://localhost:3000/_next/static/chunks/src_0h1jc8h._.js?id=%255Bproject%255D/src/app/(app)/dashboard/page.tsx+%255Bapp-client%255D+(ecmascript):85:238)\n'[39m +
+    [32m'    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14894:24)\n'[39m +
+    [32m'    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4425:24)\n'[39m +
+    [32m'    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:5892:21)\n'[39m +
+    [32m'    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6518:24)\n'[39m +
+    [32m'    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)\n'[39m +
+    [32m'    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9385:97)\n'[39m +
+    [32m'    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)\n'[39m +
+    [32m'    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)\n'[39m +
+    [32m'    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)\n'[39m +
+    [32m'    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10093:9)\n'[39m +
+    [32m'    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10009:316)\n'[39m +
+    [32m'    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10030:106)\n'[39m +
+    [32m'    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10104:158'[39m
+} 
+    at reportError (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+    at RouteError.useEffect (file://D:/Insightchart/.next/dev/static/chunks/_1q5vk5h._.js:65:155)
+    at Object.react_stack_bottom_frame (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:14944:22)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at commitHookEffectListMount (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7082:167)
+    at commitHookPassiveMountEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:7117:60)
+    at reconnectPassiveEffects (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8609:17)
+    at doubleInvokeEffectsOnFiber (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9947:189)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:79)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147)
+    at recursivelyTraverseAndDoubleInvokeEffectsInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9940:147) (file://D:/Insightchart/.next/dev/static/chunks/%5Broot-of-the-server%5D__08upy5p._.js:3477:13)
+○ Compiling /dashboard ...
+ GET /dashboard 200 in 8.5s (next.js: 7.8s, application-code: 649ms)
+ GET /dashboard 200 in 9.1s (next.js: 8.5s, application-code: 636ms)
+ GET /dashboard 200 in 174ms (next.js: 54ms, application-code: 120ms)
+ GET / 307 in 613ms (next.js: 535ms, application-code: 78ms)
+ GET /dashboard 200 in 58ms (next.js: 10ms, application-code: 48ms)
+ GET /dashboard 200 in 100ms (next.js: 14ms, application-code: 86ms)
+ GET /upload 200 in 513ms (next.js: 420ms, application-code: 93ms)
+ GET /students 200 in 624ms (next.js: 543ms, application-code: 81ms)
+ GET /charts 200 in 1120ms (next.js: 956ms, application-code: 164ms)
+ GET /departments 200 in 913ms (next.js: 750ms, application-code: 164ms)
+ GET /interventions 200 in 361ms (next.js: 310ms, application-code: 51ms)
+ GET /placement 200 in 380ms (next.js: 319ms, application-code: 61ms)
+ GET /reports 200 in 524ms (next.js: 454ms, application-code: 70ms)
+ GET /tasks 200 in 400ms (next.js: 339ms, application-code: 61ms)
+ GET /alerts 200 in 493ms (next.js: 439ms, application-code: 54ms)
+ GET /settings 200 in 393ms (next.js: 338ms, application-code: 55ms)
+ GET /dashboard 200 in 103ms (next.js: 29ms, application-code: 75ms)
+ GET /students 200 in 36ms (next.js: 16ms, application-code: 20ms)
+ GET /students 200 in 59ms (next.js: 7ms, application-code: 51ms)
+ GET /dashboard 200 in 107ms (next.js: 5ms, application-code: 101ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at completeWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at completeUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9452:23)
+    at performUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9387:28)
+    at workLoopSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)
+    at renderRootSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)
+    at performWorkOnRoot (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)
+    at performWorkOnRootViaSchedulerTask (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10085:9)
+    at MessagePort.performWorkUntilDeadline (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <__next_root_layout_boundary__>
+      <SegmentViewNode type="layout" pagePath="layout.tsx">
+        <SegmentTrieNode>
+        <link>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <RootLayout>
+          <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+            <body className="min-h-full...">
+              <Script>
+              <Script>
+              <ErrorListener>
+              <AppProvider>
+                <AppShell>
+                  <div className="min-h-full...">
+                    <Sidebar>
+                    <MobileSidebarDrawer>
+                    <div className="flex-1 fle...">
+                      <Topbar onOpenMobileMenu={function onOpenMobileMenu}>
+                        <header className="sticky top..." style={{height:"va..."}}>
+                          <div className="h-full px-...">
+                            <div>
+                            <div className="flex items...">
+                              <div>
+                              <ThemeToggle>
+                                <button
+                                  onClick={function toggle}
++                                 aria-label="Switch to light theme"
+-                                 aria-label="Switch to dark theme"
++                                 aria-pressed={true}
+-                                 aria-pressed="false"
+                                  className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]..."
+                                >
+                                  <Sun size={16}>
+                                    <svg
+                                      ref={null}
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={16}
+                                      height={16}
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
++                                     className="lucide lucide-sun"
+-                                     className="lucide lucide-moon"
+                                    >
++                                     <circle cx="12" cy="12" r="4">
+-                                     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z">
+                                      ...
+                              ...
+                      ...
+              ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at circle (<anonymous>)
+    at Array.map (<anonymous>)
+    at ThemeToggle (src/components/ThemeToggle.tsx:45:17)
+    at Topbar (src/components/shell/Topbar.tsx:69:11)
+    at AppShell (src/components/shell/AppShell.tsx:36:9)
+    at RootLayout (src\app\layout.tsx:55:11)
+  43 |       className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+  44 |     >
+> 45 |       {isDark ? <Sun size={16} /> : <Moon size={16} />}
+     |                 ^
+  46 |     </button>
+  47 |   );
+  48 | }
+ GET /upload 200 in 452ms (next.js: 170ms, application-code: 282ms)
+ GET /students 200 in 258ms (next.js: 44ms, application-code: 214ms)
+ GET /departments 200 in 177ms (next.js: 21ms, application-code: 156ms)
+ GET /charts 200 in 78ms (next.js: 30ms, application-code: 47ms)
+ GET /reports 200 in 150ms (next.js: 17ms, application-code: 133ms)
+ GET /placement 200 in 197ms (next.js: 142ms, application-code: 55ms)
+ GET /reports 200 in 111ms (next.js: 45ms, application-code: 66ms)
+ GET /tasks 200 in 55ms (next.js: 14ms, application-code: 41ms)
+ GET /alerts 200 in 152ms (next.js: 45ms, application-code: 107ms)
+ GET /dashboard 200 in 249ms (next.js: 32ms, application-code: 217ms)
+ GET /alerts 200 in 131ms (next.js: 50ms, application-code: 81ms)
+ GET /students 200 in 168ms (next.js: 63ms, application-code: 105ms)
+✓ Compiled in 351ms
+ GET /students 200 in 111ms (next.js: 16ms, application-code: 95ms)
+ GET /dashboard 200 in 55ms (next.js: 15ms, application-code: 40ms)
+ GET /alerts 200 in 177ms (next.js: 77ms, application-code: 100ms)
+ GET /dashboard 200 in 179ms (next.js: 5ms, application-code: 174ms)
+✓ Compiled in 365ms
+ GET /dashboard 200 in 270ms (next.js: 70ms, application-code: 200ms)
+ GET /dashboard 200 in 136ms (next.js: 13ms, application-code: 123ms)
+ GET /dashboard 200 in 101ms (next.js: 11ms, application-code: 90ms)
+ GET /settings 200 in 239ms (next.js: 13ms, application-code: 226ms)
+ GET /dashboard 200 in 88ms (next.js: 9ms, application-code: 79ms)
+ GET /alerts 200 in 34ms (next.js: 13ms, application-code: 22ms)
+ GET /dashboard 200 in 148ms (next.js: 35ms, application-code: 113ms)
+ GET /upload 200 in 131ms (next.js: 27ms, application-code: 104ms)
+ GET /dashboard 200 in 46ms (next.js: 12ms, application-code: 34ms)
+ GET /dashboard 200 in 59ms (next.js: 7ms, application-code: 53ms)
+ GET /dashboard 200 in 56ms (next.js: 5ms, application-code: 51ms)
+ GET /dashboard 200 in 45ms (next.js: 4ms, application-code: 41ms)
+ GET /dashboard 200 in 50ms (next.js: 6ms, application-code: 44ms)
+ GET /dashboard 200 in 57ms (next.js: 10ms, application-code: 47ms)
+ GET /dashboard 200 in 28ms (next.js: 6ms, application-code: 23ms)
+✓ Compiled in 261ms
+ GET /dashboard 200 in 48ms (next.js: 4ms, application-code: 44ms)
+✓ Compiled in 1505ms
+DEBUG MobileSidebarDrawer render { open: false, prevOpen: false, mounted: false }
+ GET /dashboard 200 in 1094ms (next.js: 581ms, application-code: 514ms)
+ GET /dashboard 200 in 237ms (next.js: 52ms, application-code: 185ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at completeWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at completeUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9452:23)
+    at performUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9387:28)
+    at workLoopSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)
+    at renderRootSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)
+    at performWorkOnRoot (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)
+    at performWorkOnRootViaSchedulerTask (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10085:9)
+    at MessagePort.performWorkUntilDeadline (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <__next_root_layout_boundary__>
+      <SegmentViewNode type="layout" pagePath="layout.tsx">
+        <SegmentTrieNode>
+        <link>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <RootLayout>
+          <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+            <body className="min-h-full...">
+              <Script>
+              <Script>
+              <ErrorListener>
+              <AppProvider>
+                <AppShell>
+                  <div className="min-h-full...">
+                    <Sidebar>
+                    <MobileSidebarDrawer>
+                    <div className="flex-1 fle...">
+                      <Topbar onOpenMobileMenu={function onOpenMobileMenu}>
+                        <header className="sticky top..." style={{height:"va..."}}>
+                          <div className="h-full px-...">
+                            <div>
+                            <div className="flex items...">
+                              <div>
+                              <ThemeToggle>
+                                <button
+                                  onClick={function toggle}
++                                 aria-label="Switch to light theme"
+-                                 aria-label="Switch to dark theme"
++                                 aria-pressed={true}
+-                                 aria-pressed="false"
+                                  className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]..."
+                                >
+                                  <Sun size={16}>
+                                    <svg
+                                      ref={null}
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={16}
+                                      height={16}
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
++                                     className="lucide lucide-sun"
+-                                     className="lucide lucide-moon"
+                                    >
++                                     <circle cx="12" cy="12" r="4">
+-                                     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z">
+                                      ...
+                              ...
+                      ...
+              ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at circle (<anonymous>)
+    at Array.map (<anonymous>)
+    at ThemeToggle (src/components/ThemeToggle.tsx:45:17)
+    at Topbar (src/components/shell/Topbar.tsx:72:11)
+    at AppShell (src/components/shell/AppShell.tsx:36:9)
+    at RootLayout (src\app\layout.tsx:55:11)
+  43 |       className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+  44 |     >
+> 45 |       {isDark ? <Sun size={16} /> : <Moon size={16} />}
+     |                 ^
+  46 |     </button>
+  47 |   );
+  48 | }
+DEBUG MobileSidebarDrawer render { open: false, prevOpen: false, mounted: false }
+ GET /dashboard 200 in 109ms (next.js: 17ms, application-code: 92ms)
+ GET /upload 200 in 230ms (next.js: 165ms, application-code: 66ms)
+ GET /students 200 in 189ms (next.js: 32ms, application-code: 156ms)
+ GET /departments 200 in 315ms (next.js: 22ms, application-code: 292ms)
+ GET /dashboard 200 in 167ms (next.js: 111ms, application-code: 56ms)
+✓ Compiled in 2.1s
+ GET /dashboard 200 in 460ms (next.js: 293ms, application-code: 167ms)
+ GET /dashboard 200 in 52ms (next.js: 12ms, application-code: 39ms)
+✓ Compiled in 1083ms
+ GET /dashboard 200 in 72ms (next.js: 33ms, application-code: 38ms)
+ GET /dashboard 200 in 49ms (next.js: 12ms, application-code: 37ms)
+ GET /dashboard 200 in 215ms (next.js: 79ms, application-code: 136ms)
+ GET /alerts 200 in 195ms (next.js: 18ms, application-code: 177ms)
+ GET /dashboard 200 in 200ms (next.js: 90ms, application-code: 110ms)
+ GET /dashboard 200 in 103ms (next.js: 8ms, application-code: 95ms)
+ GET /dashboard 200 in 57ms (next.js: 7ms, application-code: 50ms)
+✓ Compiled in 241ms
+ GET /dashboard 200 in 88ms (next.js: 17ms, application-code: 71ms)
+ GET /dashboard 200 in 34ms (next.js: 8ms, application-code: 26ms)
+ GET /dashboard 200 in 58ms (next.js: 4ms, application-code: 54ms)
+ GET /students 200 in 25ms (next.js: 9ms, application-code: 17ms)
+ GET /students 200 in 67ms (next.js: 8ms, application-code: 59ms)
+ GET /dashboard 200 in 57ms (next.js: 6ms, application-code: 51ms)
+ GET /charts 200 in 65ms (next.js: 10ms, application-code: 54ms)
+ GET /departments 200 in 89ms (next.js: 10ms, application-code: 79ms)
+ GET /alerts 200 in 62ms (next.js: 7ms, application-code: 55ms)
+ GET /charts 200 in 56ms (next.js: 5ms, application-code: 52ms)
+ GET / 307 in 62ms (next.js: 7ms, application-code: 55ms)
+ GET /dashboard 200 in 54ms (next.js: 7ms, application-code: 47ms)
+ GET / 307 in 56ms (next.js: 7ms, application-code: 49ms)
+ GET /dashboard 200 in 48ms (next.js: 5ms, application-code: 43ms)
+ GET /dashboard 200 in 375ms (next.js: 18ms, application-code: 356ms)
+ GET /departments 200 in 590ms (next.js: 57ms, application-code: 533ms)
+ GET /reports 200 in 460ms (next.js: 18ms, application-code: 442ms)
+ GET /dashboard 200 in 469ms (next.js: 56ms, application-code: 413ms)
+ GET / 307 in 468ms (next.js: 68ms, application-code: 400ms)
+ GET /dashboard 200 in 468ms (next.js: 76ms, application-code: 392ms)
+ GET /charts 200 in 326ms (next.js: 24ms, application-code: 302ms)
+ GET /dashboard 200 in 269ms (next.js: 17ms, application-code: 252ms)
+ GET /upload 200 in 478ms (next.js: 17ms, application-code: 460ms)
+ GET /departments 200 in 460ms (next.js: 26ms, application-code: 434ms)
+ GET /alerts 200 in 278ms (next.js: 18ms, application-code: 259ms)
+ GET /alerts 200 in 195ms (next.js: 20ms, application-code: 175ms)
+ GET /dashboard 200 in 202ms (next.js: 24ms, application-code: 178ms)
+ GET /departments 200 in 290ms (next.js: 28ms, application-code: 263ms)
+ GET /dashboard 200 in 350ms (next.js: 11ms, application-code: 338ms)
+ GET /upload 200 in 315ms (next.js: 17ms, application-code: 298ms)
+ GET /upload 200 in 232ms (next.js: 12ms, application-code: 220ms)
+ GET /dashboard 200 in 200ms (next.js: 14ms, application-code: 186ms)
+ GET /upload 200 in 240ms (next.js: 23ms, application-code: 216ms)
+ GET /charts 200 in 887ms (next.js: 14ms, application-code: 872ms)
+ GET /settings 200 in 702ms (next.js: 29ms, application-code: 673ms)
+ GET /upload 200 in 704ms (next.js: 58ms, application-code: 646ms)
+ GET /dashboard 200 in 381ms (next.js: 25ms, application-code: 356ms)
+ GET /students 200 in 381ms (next.js: 44ms, application-code: 337ms)
+ GET /charts 200 in 268ms (next.js: 30ms, application-code: 238ms)
+ GET /departments 200 in 509ms (next.js: 16ms, application-code: 493ms)
+ GET /upload 200 in 370ms (next.js: 59ms, application-code: 311ms)
+ GET /settings 200 in 369ms (next.js: 38ms, application-code: 332ms)
+ GET /students 200 in 371ms (next.js: 19ms, application-code: 352ms)
+ GET /dashboard 200 in 766ms (next.js: 23ms, application-code: 743ms)
+ GET /charts 200 in 538ms (next.js: 23ms, application-code: 515ms)
+ GET /alerts 200 in 554ms (next.js: 96ms, application-code: 458ms)
+ GET /charts 200 in 213ms (next.js: 52ms, application-code: 161ms)
+ GET /settings 200 in 708ms (next.js: 17ms, application-code: 691ms)
+ GET /departments 200 in 378ms (next.js: 31ms, application-code: 347ms)
+ GET /dashboard 200 in 640ms (next.js: 34ms, application-code: 606ms)
+ GET /dashboard 200 in 452ms (next.js: 33ms, application-code: 419ms)
+ GET /dashboard 200 in 326ms (next.js: 23ms, application-code: 303ms)
+ GET /charts 200 in 225ms (next.js: 32ms, application-code: 193ms)
+ GET /interventions 200 in 200ms (next.js: 55ms, application-code: 144ms)
+ GET /placement 200 in 73ms (next.js: 24ms, application-code: 49ms)
+ GET /reports 200 in 58ms (next.js: 10ms, application-code: 48ms)
+ GET /settings 200 in 184ms (next.js: 20ms, application-code: 165ms)
+ GET /tasks 200 in 71ms (next.js: 19ms, application-code: 52ms)
+ GET /alerts 200 in 60ms (next.js: 11ms, application-code: 49ms)
+ GET / 307 in 55ms (next.js: 6ms, application-code: 49ms)
+ GET /dashboard 200 in 56ms (next.js: 5ms, application-code: 51ms)
+ GET / 307 in 61ms (next.js: 7ms, application-code: 54ms)
+ GET /dashboard 200 in 57ms (next.js: 6ms, application-code: 51ms)
+ GET /upload 200 in 59ms (next.js: 5ms, application-code: 54ms)
+ GET / 307 in 50ms (next.js: 10ms, application-code: 41ms)
+ GET /dashboard 200 in 53ms (next.js: 12ms, application-code: 41ms)
+ GET / 307 in 56ms (next.js: 6ms, application-code: 50ms)
+ GET /dashboard 200 in 88ms (next.js: 9ms, application-code: 79ms)
+ GET /reports 200 in 151ms (next.js: 26ms, application-code: 125ms)
+ GET /charts 200 in 553ms (next.js: 83ms, application-code: 469ms)
+ GET /dashboard 200 in 476ms (next.js: 110ms, application-code: 366ms)
+ GET /dashboard 200 in 392ms (next.js: 50ms, application-code: 342ms)
+ GET / 307 in 424ms (next.js: 37ms, application-code: 388ms)
+ GET /dashboard 200 in 425ms (next.js: 47ms, application-code: 378ms)
+ GET /departments 200 in 428ms (next.js: 56ms, application-code: 372ms)
+ GET /dashboard 200 in 234ms (next.js: 27ms, application-code: 207ms)
+ GET /upload 200 in 410ms (next.js: 17ms, application-code: 392ms)
+ GET /departments 200 in 370ms (next.js: 18ms, application-code: 353ms)
+ GET /alerts 200 in 232ms (next.js: 27ms, application-code: 205ms)
+ GET /alerts 200 in 329ms (next.js: 49ms, application-code: 280ms)
+ GET /dashboard 200 in 225ms (next.js: 18ms, application-code: 207ms)
+ GET /departments 200 in 204ms (next.js: 88ms, application-code: 116ms)
+ GET /upload 200 in 471ms (next.js: 20ms, application-code: 451ms)
+ GET /upload 200 in 418ms (next.js: 12ms, application-code: 405ms)
+ GET /charts 200 in 478ms (next.js: 22ms, application-code: 456ms)
+ GET /upload 200 in 479ms (next.js: 27ms, application-code: 452ms)
+ GET /dashboard 200 in 482ms (next.js: 45ms, application-code: 437ms)
+ GET /dashboard 200 in 291ms (next.js: 27ms, application-code: 263ms)
+ GET /dashboard 200 in 325ms (next.js: 15ms, application-code: 311ms)
+ GET /upload 200 in 761ms (next.js: 23ms, application-code: 738ms)
+ GET /dashboard 200 in 377ms (next.js: 33ms, application-code: 345ms)
+ GET /upload 200 in 389ms (next.js: 114ms, application-code: 275ms)
+ GET /students 200 in 320ms (next.js: 28ms, application-code: 292ms)
+ GET /students 200 in 169ms (next.js: 33ms, application-code: 136ms)
+ GET /dashboard 200 in 932ms (next.js: 15ms, application-code: 916ms)
+ GET /dashboard 200 in 762ms (next.js: 28ms, application-code: 734ms)
+ GET /charts 200 in 573ms (next.js: 35ms, application-code: 539ms)
+ GET /charts 200 in 596ms (next.js: 70ms, application-code: 527ms)
+ GET /settings 200 in 603ms (next.js: 179ms, application-code: 425ms)
+ GET /departments 200 in 614ms (next.js: 28ms, application-code: 586ms)
+ GET /departments 200 in 216ms (next.js: 26ms, application-code: 190ms)
+ GET /alerts 200 in 270ms (next.js: 12ms, application-code: 258ms)
+ GET /interventions 200 in 100ms (next.js: 23ms, application-code: 77ms)
+ GET /placement 200 in 69ms (next.js: 21ms, application-code: 49ms)
+ GET /reports 200 in 79ms (next.js: 16ms, application-code: 63ms)
+ GET /tasks 200 in 59ms (next.js: 18ms, application-code: 41ms)
+ GET /alerts 200 in 47ms (next.js: 12ms, application-code: 34ms)
+ GET / 307 in 62ms (next.js: 4ms, application-code: 58ms)
+ GET /dashboard 200 in 61ms (next.js: 5ms, application-code: 56ms)
+ GET / 307 in 58ms (next.js: 5ms, application-code: 53ms)
+ GET /dashboard 200 in 60ms (next.js: 5ms, application-code: 55ms)
+ GET /dashboard 200 in 569ms (next.js: 11ms, application-code: 558ms)
+ GET /charts 200 in 568ms (next.js: 27ms, application-code: 541ms)
+ GET / 307 in 460ms (next.js: 18ms, application-code: 442ms)
+ GET /departments 200 in 461ms (next.js: 43ms, application-code: 418ms)
+ GET /dashboard 200 in 435ms (next.js: 63ms, application-code: 373ms)
+ GET /dashboard 200 in 437ms (next.js: 74ms, application-code: 363ms)
+ GET /reports 200 in 437ms (next.js: 81ms, application-code: 355ms)
+ GET /dashboard 200 in 234ms (next.js: 30ms, application-code: 204ms)
+ GET /upload 200 in 734ms (next.js: 12ms, application-code: 722ms)
+ GET /departments 200 in 550ms (next.js: 25ms, application-code: 525ms)
+ GET /alerts 200 in 700ms (next.js: 52ms, application-code: 648ms)
+ GET /alerts 200 in 669ms (next.js: 38ms, application-code: 631ms)
+ GET /dashboard 200 in 518ms (next.js: 29ms, application-code: 488ms)
+ GET /dashboard 200 in 387ms (next.js: 25ms, application-code: 362ms)
+ GET /departments 200 in 404ms (next.js: 62ms, application-code: 342ms)
+ GET /upload 200 in 1415ms (next.js: 32ms, application-code: 1383ms)
+ GET /upload 200 in 1314ms (next.js: 42ms, application-code: 1273ms)
+ GET /upload 200 in 1013ms (next.js: 36ms, application-code: 977ms)
+ GET /charts 200 in 1018ms (next.js: 174ms, application-code: 844ms)
+ GET /upload 200 in 548ms (next.js: 49ms, application-code: 500ms)
+ GET /students 200 in 925ms (next.js: 57ms, application-code: 868ms)
+ GET /dashboard 200 in 643ms (next.js: 57ms, application-code: 585ms)
+ GET /dashboard 200 in 393ms (next.js: 37ms, application-code: 355ms)
+ GET /charts 200 in 850ms (next.js: 50ms, application-code: 801ms)
+ GET /dashboard 200 in 534ms (next.js: 57ms, application-code: 477ms)
+ GET /upload 200 in 589ms (next.js: 27ms, application-code: 562ms)
+ GET /departments 200 in 959ms (next.js: 21ms, application-code: 938ms)
+ GET /dashboard 200 in 802ms (next.js: 46ms, application-code: 757ms)
+ GET /settings 200 in 560ms (next.js: 53ms, application-code: 507ms)
+ GET /dashboard 200 in 626ms (next.js: 99ms, application-code: 527ms)
+ GET /students 200 in 227ms (next.js: 56ms, application-code: 171ms)
+ GET /alerts 200 in 326ms (next.js: 16ms, application-code: 310ms)
+ GET /charts 200 in 111ms (next.js: 22ms, application-code: 89ms)
+ GET /departments 200 in 62ms (next.js: 17ms, application-code: 45ms)
+ GET /interventions 200 in 49ms (next.js: 16ms, application-code: 33ms)
+ GET /placement 200 in 45ms (next.js: 11ms, application-code: 34ms)
+ GET /reports 200 in 47ms (next.js: 12ms, application-code: 35ms)
+ GET /tasks 200 in 48ms (next.js: 11ms, application-code: 37ms)
+ GET /alerts 200 in 40ms (next.js: 14ms, application-code: 26ms)
+ GET / 307 in 75ms (next.js: 15ms, application-code: 60ms)
+ GET /dashboard 200 in 72ms (next.js: 18ms, application-code: 54ms)
+ GET / 307 in 65ms (next.js: 6ms, application-code: 59ms)
+ GET /dashboard 200 in 51ms (next.js: 7ms, application-code: 44ms)
+ GET /reports 200 in 376ms (next.js: 19ms, application-code: 357ms)
+ GET /dashboard 200 in 605ms (next.js: 53ms, application-code: 553ms)
+ GET /departments 200 in 590ms (next.js: 52ms, application-code: 538ms)
+ GET / 307 in 498ms (next.js: 18ms, application-code: 480ms)
+ GET /dashboard 200 in 499ms (next.js: 36ms, application-code: 464ms)
+ GET /dashboard 200 in 499ms (next.js: 54ms, application-code: 446ms)
+ GET /charts 200 in 499ms (next.js: 66ms, application-code: 433ms)
+ GET /dashboard 200 in 227ms (next.js: 30ms, application-code: 197ms)
+ GET /upload 200 in 1032ms (next.js: 32ms, application-code: 1000ms)
+ GET /departments 200 in 1017ms (next.js: 38ms, application-code: 979ms)
+ GET /departments 200 in 729ms (next.js: 33ms, application-code: 695ms)
+ GET /alerts 200 in 737ms (next.js: 121ms, application-code: 616ms)
+ GET /alerts 200 in 478ms (next.js: 22ms, application-code: 456ms)
+ GET /dashboard 200 in 372ms (next.js: 26ms, application-code: 345ms)
+ GET /upload 200 in 393ms (next.js: 18ms, application-code: 376ms)
+ GET /upload 200 in 1091ms (next.js: 60ms, application-code: 1030ms)
+ GET /dashboard 200 in 622ms (next.js: 37ms, application-code: 585ms)
+ GET /upload 200 in 629ms (next.js: 73ms, application-code: 556ms)
+ GET /students 200 in 836ms (next.js: 80ms, application-code: 755ms)
+ GET /charts 200 in 769ms (next.js: 34ms, application-code: 735ms)
+ GET /dashboard 200 in 783ms (next.js: 64ms, application-code: 718ms)
+ GET /upload 200 in 789ms (next.js: 37ms, application-code: 752ms)
+ GET /dashboard 200 in 557ms (next.js: 73ms, application-code: 484ms)
+ GET /charts 200 in 615ms (next.js: 39ms, application-code: 577ms)
+ GET /dashboard 200 in 475ms (next.js: 50ms, application-code: 424ms)
+ GET /upload 200 in 142ms (next.js: 44ms, application-code: 98ms)
+ GET /departments 200 in 845ms (next.js: 25ms, application-code: 821ms)
+ GET /students 200 in 489ms (next.js: 220ms, application-code: 269ms)
+ GET /dashboard 200 in 522ms (next.js: 25ms, application-code: 497ms)
+ GET /settings 200 in 342ms (next.js: 28ms, application-code: 314ms)
+ GET /charts 200 in 87ms (next.js: 16ms, application-code: 71ms)
+ GET /dashboard 200 in 544ms (next.js: 15ms, application-code: 529ms)
+ GET /alerts 200 in 285ms (next.js: 19ms, application-code: 266ms)
+ GET /departments 200 in 268ms (next.js: 170ms, application-code: 99ms)
+ GET /interventions 200 in 58ms (next.js: 15ms, application-code: 42ms)
+ GET /placement 200 in 66ms (next.js: 18ms, application-code: 47ms)
+ GET /reports 200 in 44ms (next.js: 10ms, application-code: 34ms)
+ GET /tasks 200 in 44ms (next.js: 10ms, application-code: 34ms)
+ GET /alerts 200 in 45ms (next.js: 11ms, application-code: 34ms)
+ GET / 307 in 68ms (next.js: 6ms, application-code: 61ms)
+ GET /dashboard 200 in 77ms (next.js: 4ms, application-code: 73ms)
+ GET / 307 in 69ms (next.js: 10ms, application-code: 59ms)
+ GET /dashboard 200 in 68ms (next.js: 10ms, application-code: 58ms)
+ GET /upload 200 in 136ms (next.js: 14ms, application-code: 122ms)
+ GET /charts 200 in 89ms (next.js: 9ms, application-code: 79ms)
+ GET /upload 200 in 68ms (next.js: 9ms, application-code: 59ms)
+ GET /upload 200 in 70ms (next.js: 5ms, application-code: 65ms)
+ GET /upload 200 in 71ms (next.js: 7ms, application-code: 64ms)
+ GET /settings 200 in 23ms (next.js: 6ms, application-code: 17ms)
+✓ Compiled in 677ms
+ GET /dashboard 200 in 112ms (next.js: 21ms, application-code: 91ms)
+ GET /dashboard 200 in 47ms (next.js: 14ms, application-code: 33ms)
+ GET /dashboard 200 in 286ms (next.js: 32ms, application-code: 254ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+    at completeWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+    at runWithFiberInDEV (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:761:74)
+    at completeUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9452:23)
+    at performUnitOfWork (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9387:28)
+    at workLoopSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9279:40)
+    at renderRootSync (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9263:13)
+    at performWorkOnRoot (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:8928:47)
+    at performWorkOnRootViaSchedulerTask (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10085:9)
+    at MessagePort.performWorkUntilDeadline (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://D:/Insightchart/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6772:102)
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <__next_root_layout_boundary__>
+      <SegmentViewNode type="layout" pagePath="layout.tsx">
+        <SegmentTrieNode>
+        <link>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <script>
+        <RootLayout>
+          <html lang="en" className="h-full ant..." suppressHydrationWarning={true}>
+            <body className="min-h-full...">
+              <Script>
+              <Script>
+              <ErrorListener>
+              <AppProvider>
+                <AppShell>
+                  <div className="min-h-full...">
+                    <Sidebar>
+                    <MobileSidebarDrawer>
+                    <div className="flex-1 fle...">
+                      <Topbar onOpenMobileMenu={function onOpenMobileMenu}>
+                        <header className="sticky top..." style={{height:"va..."}}>
+                          <div className="h-full px-...">
+                            <div>
+                            <div className="flex items...">
+                              <div>
+                              <ThemeToggle>
+                                <button
+                                  onClick={function toggle}
++                                 aria-label="Switch to light theme"
+-                                 aria-label="Switch to dark theme"
++                                 aria-pressed={true}
+-                                 aria-pressed="false"
+                                  className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)]..."
+                                >
+                                  <Sun size={16}>
+                                    <svg
+                                      ref={null}
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={16}
+                                      height={16}
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
++                                     className="lucide lucide-sun"
+-                                     className="lucide lucide-moon"
+                                    >
++                                     <circle cx="12" cy="12" r="4">
+-                                     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z">
+                                      ...
+                              ...
+                      ...
+              ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at circle (<anonymous>)
+    at Array.map (<anonymous>)
+    at ThemeToggle (src/components/ThemeToggle.tsx:45:17)
+    at Topbar (src/components/shell/Topbar.tsx:69:11)
+    at AppShell (src/components/shell/AppShell.tsx:36:9)
+    at RootLayout (src\app\layout.tsx:55:11)
+  43 |       className="rounded-lg p-2 text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+  44 |     >
+> 45 |       {isDark ? <Sun size={16} /> : <Moon size={16} />}
+     |                 ^
+  46 |     </button>
+  47 |   );
+  48 | }
+ GET /upload 200 in 193ms (next.js: 37ms, application-code: 155ms)
+ GET /students 200 in 131ms (next.js: 77ms, application-code: 54ms)
+ GET /charts 200 in 90ms (next.js: 15ms, application-code: 75ms)
+ GET /departments 200 in 509ms (next.js: 296ms, application-code: 213ms)
+ GET /departments 200 in 175ms (next.js: 33ms, application-code: 143ms)
+ GET /upload 200 in 632ms (next.js: 4ms, application-code: 627ms)
+ GET /interventions 200 in 372ms (next.js: 155ms, application-code: 217ms)
+ GET /placement 200 in 193ms (next.js: 79ms, application-code: 115ms)
+ GET /placement 200 in 146ms (next.js: 27ms, application-code: 118ms)
+ GET /reports 200 in 151ms (next.js: 91ms, application-code: 60ms)
+ GET /tasks 200 in 111ms (next.js: 26ms, application-code: 85ms)
+ GET /alerts 200 in 141ms (next.js: 85ms, application-code: 56ms)
+ GET /dashboard 200 in 244ms (next.js: 109ms, application-code: 135ms)
+ GET /upload 200 in 76ms (next.js: 13ms, application-code: 63ms)
+ GET / 307 in 81ms (next.js: 23ms, application-code: 58ms)
+ GET /dashboard 200 in 56ms (next.js: 4ms, application-code: 52ms)
+ GET / 307 in 56ms (next.js: 4ms, application-code: 51ms)
+ GET /dashboard 200 in 55ms (next.js: 5ms, application-code: 50ms)
+ GET /dashboard 200 in 1118ms (next.js: 23ms, application-code: 1094ms)
+ GET /dashboard 200 in 1118ms (next.js: 42ms, application-code: 1076ms)
+ GET /dashboard 200 in 896ms (next.js: 30ms, application-code: 866ms)
+ GET /reports 200 in 896ms (next.js: 44ms, application-code: 852ms)
+ GET /charts 200 in 906ms (next.js: 278ms, application-code: 628ms)
+ GET / 307 in 905ms (next.js: 71ms, application-code: 834ms)
+ GET /departments 200 in 912ms (next.js: 265ms, application-code: 647ms)
+ GET /dashboard 200 in 356ms (next.js: 65ms, application-code: 292ms)
+ GET /upload 200 in 1172ms (next.js: 22ms, application-code: 1150ms)
+ GET /departments 200 in 1047ms (next.js: 51ms, application-code: 996ms)
+ GET /alerts 200 in 726ms (next.js: 35ms, application-code: 691ms)
+ GET /departments 200 in 864ms (next.js: 238ms, application-code: 627ms)
+ GET /dashboard 200 in 636ms (next.js: 31ms, application-code: 604ms)
+ GET /alerts 200 in 647ms (next.js: 63ms, application-code: 584ms)
+ GET /dashboard 200 in 385ms (next.js: 51ms, application-code: 334ms)
+ GET /upload 200 in 409ms (next.js: 24ms, application-code: 386ms)
+ GET /upload 200 in 1058ms (next.js: 33ms, application-code: 1025ms)
+ GET /charts 200 in 727ms (next.js: 23ms, application-code: 704ms)
+ GET /upload 200 in 733ms (next.js: 56ms, application-code: 678ms)
+ GET /upload 200 in 328ms (next.js: 28ms, application-code: 301ms)
+ GET /dashboard 200 in 292ms (next.js: 21ms, application-code: 271ms)
+ GET /students 200 in 696ms (next.js: 171ms, application-code: 525ms)
+ GET /dashboard 200 in 362ms (next.js: 33ms, application-code: 330ms)
+ GET /charts 200 in 477ms (next.js: 25ms, application-code: 452ms)
+ GET /settings 200 in 298ms (next.js: 76ms, application-code: 222ms)
+ GET /upload 200 in 170ms (next.js: 43ms, application-code: 126ms)
+ GET /dashboard 200 in 983ms (next.js: 20ms, application-code: 964ms)
+ GET /departments 200 in 754ms (next.js: 20ms, application-code: 735ms)
+ GET /dashboard 200 in 776ms (next.js: 61ms, application-code: 715ms)
+ GET /settings 200 in 418ms (next.js: 86ms, application-code: 332ms)
+ GET /students 200 in 419ms (next.js: 140ms, application-code: 279ms)
+ GET /charts 200 in 492ms (next.js: 197ms, application-code: 295ms)
+ GET /settings 200 in 500ms (next.js: 116ms, application-code: 384ms)
+ GET /charts 200 in 522ms (next.js: 321ms, application-code: 201ms)
+ GET /departments 200 in 208ms (next.js: 73ms, application-code: 136ms)
+ GET /alerts 200 in 514ms (next.js: 91ms, application-code: 423ms)
+ GET /charts 200 in 157ms (next.js: 26ms, application-code: 131ms)
+ GET /settings 200 in 310ms (next.js: 15ms, application-code: 295ms)
+ GET /departments 200 in 77ms (next.js: 16ms, application-code: 60ms)
+ GET /dashboard 200 in 145ms (next.js: 11ms, application-code: 134ms)
+ GET /interventions 200 in 78ms (next.js: 25ms, application-code: 53ms)
+ GET /placement 200 in 58ms (next.js: 20ms, application-code: 38ms)
+ GET /reports 200 in 42ms (next.js: 10ms, application-code: 32ms)
+ GET /tasks 200 in 46ms (next.js: 10ms, application-code: 36ms)
+ GET /alerts 200 in 39ms (next.js: 10ms, application-code: 29ms)
+ GET / 307 in 61ms (next.js: 6ms, application-code: 55ms)
+ GET /dashboard 200 in 54ms (next.js: 5ms, application-code: 49ms)
+ GET / 307 in 72ms (next.js: 5ms, application-code: 67ms)
+ GET /dashboard 200 in 69ms (next.js: 5ms, application-code: 64ms)
+ GET /upload 200 in 62ms (next.js: 4ms, application-code: 58ms)
+ GET /upload 200 in 65ms (next.js: 5ms, application-code: 60ms)
+ GET / 307 in 66ms (next.js: 11ms, application-code: 55ms)
+ GET /dashboard 200 in 57ms (next.js: 5ms, application-code: 52ms)
+ GET / 307 in 68ms (next.js: 6ms, application-code: 63ms)
+ GET /dashboard 200 in 64ms (next.js: 5ms, application-code: 59ms)
+ GET /dashboard 200 in 116ms (next.js: 13ms, application-code: 102ms)
+ GET /dashboard 200 in 475ms (next.js: 19ms, application-code: 455ms)
+ GET / 307 in 467ms (next.js: 33ms, application-code: 434ms)
+ GET /reports 200 in 467ms (next.js: 24ms, application-code: 444ms)
+ GET /dashboard 200 in 468ms (next.js: 44ms, application-code: 424ms)
+ GET /departments 200 in 470ms (next.js: 14ms, application-code: 456ms)
+ GET /charts 200 in 470ms (next.js: 54ms, application-code: 415ms)
+ GET /dashboard 200 in 221ms (next.js: 19ms, application-code: 202ms)
+ GET /upload 200 in 493ms (next.js: 12ms, application-code: 481ms)
+ GET /departments 200 in 430ms (next.js: 18ms, application-code: 412ms)
+ GET /alerts 200 in 448ms (next.js: 41ms, application-code: 407ms)
+ GET /alerts 200 in 403ms (next.js: 17ms, application-code: 387ms)
+ GET /dashboard 200 in 311ms (next.js: 22ms, application-code: 289ms)
+ GET /dashboard 200 in 247ms (next.js: 23ms, application-code: 223ms)
+ GET /departments 200 in 404ms (next.js: 173ms, application-code: 230ms)
+ GET /upload 200 in 470ms (next.js: 31ms, application-code: 439ms)
+ GET /charts 200 in 975ms (next.js: 23ms, application-code: 952ms)
+ GET /upload 200 in 768ms (next.js: 28ms, application-code: 741ms)
+ GET /upload 200 in 775ms (next.js: 54ms, application-code: 721ms)
+ GET /upload 200 in 446ms (next.js: 18ms, application-code: 429ms)
+ GET /students 200 in 448ms (next.js: 63ms, application-code: 385ms)
+ GET /charts 200 in 630ms (next.js: 113ms, application-code: 518ms)
+ GET /dashboard 200 in 515ms (next.js: 28ms, application-code: 487ms)
+ GET /dashboard 200 in 410ms (next.js: 33ms, application-code: 377ms)
+ GET /dashboard 200 in 699ms (next.js: 93ms, application-code: 606ms)
+ GET /settings 200 in 371ms (next.js: 71ms, application-code: 300ms)
+ GET /departments 200 in 398ms (next.js: 44ms, application-code: 354ms)
+ GET /upload 200 in 75ms (next.js: 18ms, application-code: 57ms)
+ GET /settings 200 in 546ms (next.js: 19ms, application-code: 527ms)
+ GET /dashboard 200 in 1211ms (next.js: 63ms, application-code: 1148ms)
+ GET /alerts 200 in 897ms (next.js: 89ms, application-code: 808ms)
+ GET /dashboard 200 in 910ms (next.js: 117ms, application-code: 793ms)
+ GET /charts 200 in 974ms (next.js: 160ms, application-code: 814ms)
+ GET /students 200 in 463ms (next.js: 185ms, application-code: 278ms)
+ GET /settings 200 in 503ms (next.js: 27ms, application-code: 475ms)
+ GET /departments 200 in 379ms (next.js: 39ms, application-code: 340ms)
+ GET /settings 200 in 141ms (next.js: 40ms, application-code: 101ms)
+ GET /charts 200 in 537ms (next.js: 106ms, application-code: 431ms)
+ GET /charts 200 in 163ms (next.js: 40ms, application-code: 123ms)
+ GET /departments 200 in 73ms (next.js: 16ms, application-code: 56ms)
+ GET /interventions 200 in 46ms (next.js: 10ms, application-code: 36ms)
+ GET /placement 200 in 51ms (next.js: 11ms, application-code: 40ms)
+ GET /reports 200 in 43ms (next.js: 9ms, application-code: 34ms)
+ GET /tasks 200 in 34ms (next.js: 9ms, application-code: 25ms)
+ GET /alerts 200 in 40ms (next.js: 12ms, application-code: 28ms)

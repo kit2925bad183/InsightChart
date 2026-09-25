@@ -42,21 +42,27 @@ export function NaturalLanguageBox({ records, resetToken }: { records: StudentRe
 
     switch (action.type) {
       case "filter-below": {
-        students = records.filter((r) => r.score < action.value);
-        summary = `${students.length} student${students.length === 1 ? "" : "s"} scored below ${action.value}.`;
+        const scoped = action.department ? records.filter((r) => r.department === action.department) : records;
+        students = scoped.filter((r) => r.score < action.value);
+        const scope = action.department ? ` in ${action.department}` : "";
+        summary = `${students.length} student${students.length === 1 ? "" : "s"}${scope} scored below ${action.value}.`;
         dispatch({ type: "SET_MAPPING", mapping: { scoreMax: action.value - 0.01, scoreMin: undefined } });
         break;
       }
       case "filter-above": {
-        students = records.filter((r) => r.score > action.value);
-        summary = `${students.length} student${students.length === 1 ? "" : "s"} scored above ${action.value}.`;
+        const scoped = action.department ? records.filter((r) => r.department === action.department) : records;
+        students = scoped.filter((r) => r.score > action.value);
+        const scope = action.department ? ` in ${action.department}` : "";
+        summary = `${students.length} student${students.length === 1 ? "" : "s"}${scope} scored above ${action.value}.`;
         dispatch({ type: "SET_MAPPING", mapping: { scoreMin: action.value + 0.01, scoreMax: undefined } });
         break;
       }
       case "filter-range":
       case "names-range": {
-        students = records.filter((r) => r.score >= action.min && r.score <= action.max);
-        summary = `${students.length} student${students.length === 1 ? "" : "s"} scored between ${action.min} and ${action.max}.`;
+        const scoped = action.department ? records.filter((r) => r.department === action.department) : records;
+        students = scoped.filter((r) => r.score >= action.min && r.score <= action.max);
+        const scope = action.department ? ` in ${action.department}` : "";
+        summary = `${students.length} student${students.length === 1 ? "" : "s"}${scope} scored between ${action.min} and ${action.max}.`;
         dispatch({ type: "SET_MAPPING", mapping: { scoreMin: action.min, scoreMax: action.max } });
         break;
       }

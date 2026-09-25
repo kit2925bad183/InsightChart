@@ -46,6 +46,22 @@
 
   --gridline: #e3e9f2;
   --shadow-card: 0 1px 2px rgba(11, 31, 58, 0.04), 0 6px 20px rgba(11, 31, 58, 0.06);
+
+  /* Sidebar shell */
+  --sidebar-width: 264px;
+  --sidebar-width-collapsed: 76px;
+  --sidebar-current-width: var(--sidebar-width);
+  --topbar-height: 60px;
+}
+
+/* Driven purely by the `data-sidebar` attribute (set pre-paint in layout.tsx, mirroring
+   the theme mechanism) so the sidebar never flashes expanded-then-collapsed on load —
+   width and label visibility never depend on React state settling after hydration. */
+html[data-sidebar="collapsed"] {
+  --sidebar-current-width: var(--sidebar-width-collapsed);
+}
+html[data-sidebar="collapsed"] .sidebar-label {
+  display: none;
 }
 
 /* Dark mode — validated dark variant of the same palette (see dataviz skill

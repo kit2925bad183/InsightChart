@@ -7,6 +7,7 @@ import { DEFAULT_BANDS } from "@/lib/analysis/scoreBands";
 import { buildMockSource } from "@/lib/mockData";
 import { loadSession, saveSession, type PersistedSession } from "@/lib/persistence";
 import type { WorkspaceConfig } from "@/lib/workspace";
+import { toStudentRecords } from "@/lib/analysis/stats";
 
 type Action =
   | { type: "LOAD_SOURCE"; source: ParsedSource }
@@ -229,4 +230,36 @@ export function useApp() {
   const activeSheet = pickSheet(ctx.state);
   const setMapping = useCallback((mapping: Partial<ColumnMapping>) => ctx.dispatch({ type: "SET_MAPPING", mapping }), [ctx]);
   return { ...ctx, activeSheet, setMapping };
+}
+
+/** Shared `StudentRecord[]` derivation — every routed page needs this, so it lives here
+ * once instead of each page re-deriving it (this used to be a local useMemo inside the
+ * single-page DashboardShell). */
+export function useRecords() {
+  const { state, activeSheet } = useApp();
+  return useMemo(
+    () =>
+      activeSheet
+        ? toStudentRecords(
+            activeSheet,
+            {
+              studentName: state.mapping.studentName,
+              registration: state.mapping.registration,
+              department: state.mapping.department,
+              numeric: state.mapping.numeric,
+            },
+            state.normalizeDepartments,
+            state.departmentOverrides
+          )
+        : [],
+    [
+      activeSheet,
+      state.mapping.studentName,
+      state.mapping.registration,
+      state.mapping.department,
+      state.mapping.numeric,
+      state.normalizeDepartments,
+      state.departmentOverrides,
+    ]
+  );
 }

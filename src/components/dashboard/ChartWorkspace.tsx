@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -24,6 +24,7 @@ import {
 import { useApp } from "@/context/AppContext";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Modal } from "@/components/ui/Modal";
 import { Download, FileImage, Table2 } from "lucide-react";
 import { exportChartPdf, exportChartPng, exportRowsCsv } from "@/lib/export";
 import { categoricalVar, sequentialBlue } from "@/lib/palette";
@@ -38,6 +39,8 @@ import {
 import { FlowDiagram } from "@/components/charts/FlowDiagram";
 import { fmt } from "@/lib/analysis/stats";
 import { resolveDepartment } from "@/lib/analysis/normalizeDepartment";
+import { resolveDrillDownFilter, type DrillDownResult } from "@/lib/analysis/chartDrillDown";
+import type { ColumnMapping, DataSheet } from "@/lib/types";
 
 const TOOLTIP_STYLE = { fontSize: 12, borderRadius: 8, border: "1px solid var(--border)" };
 const AXIS_TICK = { fontSize: 11, fill: "var(--text-muted)" };
@@ -47,6 +50,12 @@ export function ChartWorkspace() {
   const chartRef = useRef<HTMLDivElement>(null);
   const { mapping, chartType, chartTitle, scoreBands, chartAccentIndex } = state;
   const accent = categoricalVar[chartAccentIndex % categoricalVar.length];
+  const [drillDown, setDrillDown] = useState<DrillDownResult | null>(null);
+
+  const handleDrillDown = (datum: Record<string, unknown>, currentRows: DataSheet["rows"]) => {
+    const result = resolveDrillDownFilter(chartType, mapping, datum, currentRows, scoreBands);
+    if (result && result.rows.length) setDrillDown(result);
+  };
 
   const rows = useMemo(() => {
     if (!activeSheet) return [];
@@ -94,7 +103,15 @@ export function ChartWorkspace() {
               <XAxis dataKey="category" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: "var(--border-strong)" }} />
               <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "var(--accent-soft)" }} />
-              <Bar dataKey="avg" name={`Average ${numericKey}`} radius={[4, 4, 0, 0]} maxBarSize={52} fill={accent} />
+              <Bar
+                dataKey="avg"
+                name={`Average ${numericKey}`}
+                radius={[4, 4, 0, 0]}
+                maxBarSize={52}
+                fill={accent}
+                cursor="pointer"
+                onClick={(d: { category: string }) => handleDrillDown(d, rows)}
+              />
             </BarChart>
           </ResponsiveContainer>
         );
@@ -121,6 +138,8 @@ export function ChartWorkspace() {
                   fill={categoricalVar[i % categoricalVar.length]}
                   radius={chartType === "stacked-bar" ? [0, 0, 0, 0] : [4, 4, 0, 0]}
                   maxBarSize={40}
+                  cursor="pointer"
+                  onClick={(d: { category: string }) => handleDrillDown({ ...d, __series: s }, rows)}
                 />
               ))}
             </BarChart>
@@ -144,6 +163,8 @@ export function ChartWorkspace() {
                 paddingAngle={2}
                 label={({ name, percent }) => `${name} ${Math.round((percent ?? 0) * 100)}%`}
                 labelLine={false}
+                cursor="pointer"
+                onClick={(d: { name: string }) => handleDrillDown(d, rows)}
               >
                 {data.map((_, i) => (
                   <Cell key={i} fill={categoricalVar[i % categoricalVar.length]} />
@@ -167,9 +188,34 @@ export function ChartWorkspace() {
               <YAxis tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               {chartType === "line" ? (
-                <Line type="monotone" dataKey="avg" name={`Average ${numericKey}`} stroke={accent} strokeWidth={2} dot={{ r: 3 }} />
+                <Line
+                  type="monotone"
+                  dataKey="avg"
+                  name={`Average ${numericKey}`}
+                  stroke={accent}
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  activeDot={{
+                    r: 5,
+                    style: { cursor: "pointer" },
+                    onClick: ((props: { payload?: { category: string } }) => props.payload && handleDrillDown(props.payload, rows)) as never,
+                  }}
+                />
               ) : (
-                <Area type="monotone" dataKey="avg" name={`Average ${numericKey}`} stroke={accent} fill={accent} fillOpacity={0.18} strokeWidth={2} />
+                <Area
+                  type="monotone"
+                  dataKey="avg"
+                  name={`Average ${numericKey}`}
+                  stroke={accent}
+                  fill={accent}
+                  fillOpacity={0.18}
+                  strokeWidth={2}
+                  activeDot={{
+                    r: 5,
+                    style: { cursor: "pointer" },
+                    onClick: ((props: { payload?: { category: string } }) => props.payload && handleDrillDown(props.payload, rows)) as never,
+                  }}
+                />
               )}
             </Chart>
           </ResponsiveContainer>
@@ -189,7 +235,13 @@ export function ChartWorkspace() {
               <YAxis type="number" dataKey="y" name={numericKey} tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <ZAxis range={[60, 60]} />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ strokeDasharray: "3 3" }} />
-              <Scatter data={data} fill={accent} fillOpacity={0.75} />
+              <Scatter
+                data={data}
+                fill={accent}
+                fillOpacity={0.75}
+                cursor="pointer"
+                onClick={(d: { y: number }) => handleDrillDown(d, rows)}
+              />
             </ScatterChart>
           </ResponsiveContainer>
         );
@@ -204,7 +256,14 @@ export function ChartWorkspace() {
               <XAxis dataKey="label" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: "var(--border-strong)" }} />
               <YAxis allowDecimals={false} tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "var(--accent-soft)" }} />
-              <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={48} fill={accent} />
+              <Bar
+                dataKey="count"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={48}
+                fill={accent}
+                cursor="pointer"
+                onClick={(d: { label: string; min: number }) => handleDrillDown(d, rows)}
+              />
             </BarChart>
           </ResponsiveContainer>
         );
@@ -212,13 +271,21 @@ export function ChartWorkspace() {
       case "heatmap": {
         if (!categoryKey) return <EmptyChart message="Select a category / department column for the heatmap rows." />;
         const { rowLabels, colLabels, cells, max } = heatmapMatrix(rows, categoryKey, numericKey, scoreBands);
-        return <HeatmapGrid rowLabels={rowLabels} colLabels={colLabels} cells={cells} max={max} />;
+        return (
+          <HeatmapGrid
+            rowLabels={rowLabels}
+            colLabels={colLabels}
+            cells={cells}
+            max={max}
+            onCellClick={(cell) => handleDrillDown(cell, rows)}
+          />
+        );
       }
       case "flow": {
         if (!categoryKey) return <EmptyChart message="Select a category / department column to map relationships." />;
         const { left, right, links } = flowLinks(rows, categoryKey, numericKey, scoreBands);
         if (!links.length) return <EmptyChart message="Not enough data to draw relationships yet." />;
-        return <FlowDiagram left={left} right={right} links={links} />;
+        return <FlowDiagram left={left} right={right} links={links} onSelectLink={(link) => handleDrillDown({ ...link }, rows)} />;
       }
       case "table": {
         if (!categoryKey) return <EmptyChart message="Select a category / X-axis column to summarise." />;
@@ -237,7 +304,11 @@ export function ChartWorkspace() {
               </thead>
               <tbody>
                 {data.map((d) => (
-                  <tr key={d.category} className="border-t border-[var(--border)]">
+                  <tr
+                    key={d.category}
+                    className="border-t border-[var(--border)] cursor-pointer hover:bg-[var(--accent-soft)]/40"
+                    onClick={() => handleDrillDown({ ...d }, rows)}
+                  >
                     <td className="px-3 py-1.5 font-medium">{fmt(d.category)}</td>
                     <td className="px-3 py-1.5 tabular">{d.count}</td>
                     <td className="px-3 py-1.5 tabular">{d.avg}</td>
@@ -253,6 +324,7 @@ export function ChartWorkspace() {
       default:
         return <EmptyChart message="Choose a chart type." />;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSheet, hasNumeric, mapping, chartType, rows, state.columns, scoreBands, accent]);
 
   if (!activeSheet) return null;
@@ -263,7 +335,7 @@ export function ChartWorkspace() {
     <Card>
       <CardHeader
         title={chartTitle || "Custom chart"}
-        subtitle="Built from the columns selected in Chart setup"
+        subtitle="Built from the columns selected in Chart setup — click a bar, slice, point, or cell to see the students behind it"
         actions={
           <>
             <Button size="sm" variant="ghost" onClick={() => chartRef.current && exportChartPng(chartRef.current, chartTitle || "chart")}>
@@ -281,7 +353,57 @@ export function ChartWorkspace() {
       <div ref={chartRef} className="bg-[var(--surface)] fade-in">
         {content}
       </div>
+      {drillDown && <DrillDownModal result={drillDown} mapping={mapping} onClose={() => setDrillDown(null)} />}
     </Card>
+  );
+}
+
+function DrillDownModal({ result, mapping, onClose }: { result: DrillDownResult; mapping: ColumnMapping; onClose: () => void }) {
+  const preferredCols = [
+    mapping.studentName && { key: mapping.studentName, label: "Name" },
+    mapping.registration && { key: mapping.registration, label: "Registration" },
+    mapping.department && { key: mapping.department, label: "Department" },
+    mapping.numeric && { key: mapping.numeric, label: "Score" },
+  ].filter((c): c is { key: string; label: string } => Boolean(c));
+
+  const fallbackCols = Object.keys(result.rows[0] ?? {})
+    .slice(0, 6)
+    .map((k) => ({ key: k, label: k }));
+
+  const cols = preferredCols.length ? preferredCols : fallbackCols;
+
+  return (
+    <Modal
+      title={result.title}
+      subtitle={`${result.rows.length} student${result.rows.length === 1 ? "" : "s"}`}
+      onClose={onClose}
+      width="lg"
+    >
+      <div className="overflow-x-auto rounded-lg border border-[var(--border)]">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="bg-[var(--surface-muted,#f2f6fc)] text-left">
+              {cols.map((c) => (
+                <th key={c.key} className="px-3 py-2 font-semibold text-[var(--text-secondary)]">
+                  {c.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {result.rows.map((row, i) => (
+              <tr key={i} className="border-t border-[var(--border)]">
+                {cols.map((c) => (
+                  <td key={c.key} className="px-3 py-1.5 tabular text-[var(--text-primary)]">
+                    {fmt(row[c.key])}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Modal>
   );
 }
 
@@ -294,11 +416,13 @@ function HeatmapGrid({
   colLabels,
   cells,
   max,
+  onCellClick,
 }: {
   rowLabels: string[];
   colLabels: string[];
   cells: { row: string; col: string; value: number }[];
   max: number;
+  onCellClick?: (cell: { row: string; col: string; value: number }) => void;
 }) {
   const lookup = new Map(cells.map((c) => [`${c.row}__${c.col}`, c.value]));
   const colorFor = (v: number) => {
@@ -330,8 +454,13 @@ function HeatmapGrid({
                 return (
                   <td key={c} title={`${r} · ${c}: ${v}`}>
                     <div
+                      onClick={() => v > 0 && onCellClick?.({ row: r, col: c, value: v })}
                       className="h-9 w-11 rounded-md flex items-center justify-center text-[11px] font-semibold tabular"
-                      style={{ background: colorFor(v), color: v / Math.max(1, max) > 0.55 ? "#fff" : "var(--text-primary)" }}
+                      style={{
+                        background: colorFor(v),
+                        color: v / Math.max(1, max) > 0.55 ? "#fff" : "var(--text-primary)",
+                        cursor: v > 0 && onCellClick ? "pointer" : undefined,
+                      }}
                     >
                       {v || ""}
                     </div>

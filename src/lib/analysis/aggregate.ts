@@ -1,6 +1,6 @@
 import type { DataSheet, ScoreBand } from "../types";
 import { bandForScore } from "./scoreBands";
-import { mean, round1 } from "./stats";
+import { mean, round1, type StudentRecord } from "./stats";
 
 function numOf(v: unknown): number | null {
   const n = typeof v === "number" ? v : Number(v);
@@ -138,6 +138,48 @@ export function flowLinks(rows: DataSheet["rows"], categoryKey: string, numericK
     }
   }
   return { left, right, links };
+}
+
+export interface DepartmentAgg {
+  department: string;
+  total: number;
+  avg: number;
+  highest: number;
+  lowest: number;
+  /** % of students at/above `passThreshold` */
+  passRate: number;
+  topPerformers: { name: string; score: number }[];
+  needsSupport: number;
+}
+
+/** One row per department: avg/highest/lowest/pass-rate/top-performers/needs-support —
+ * the stats the Department Comparison page needs beyond what DepartmentAnalysis's
+ * compare-mode cards already show. */
+export function departmentAggregates(records: StudentRecord[], passThreshold: number): DepartmentAgg[] {
+  const byDept = new Map<string, StudentRecord[]>();
+  for (const r of records) {
+    if (!r.department || r.department === "—") continue;
+    if (!byDept.has(r.department)) byDept.set(r.department, []);
+    byDept.get(r.department)!.push(r);
+  }
+  return Array.from(byDept.entries())
+    .map(([department, recs]) => {
+      const scores = recs.map((r) => r.score);
+      return {
+        department,
+        total: recs.length,
+        avg: round1(mean(scores)),
+        highest: Math.max(...scores),
+        lowest: Math.min(...scores),
+        passRate: round1((recs.filter((r) => r.score >= passThreshold).length / recs.length) * 100),
+        topPerformers: [...recs]
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 3)
+          .map((r) => ({ name: r.name, score: r.score })),
+        needsSupport: recs.filter((r) => r.score < passThreshold).length,
+      };
+    })
+    .sort((a, b) => b.avg - a.avg);
 }
 
 export function tierDistribution(rows: DataSheet["rows"], numericKey: string, bands: ScoreBand[]) {
