@@ -136,7 +136,7 @@ for (const who of ["faculty", "hod"] as const) {
     test("cannot open user management even by typing the URL", async ({ page }) => {
       const res = await page.goto("/admin/users");
       expect(res?.status()).toBe(403);
-      await expect(page.getByText("You don't have access to this page")).toBeVisible();
+      await expect(page.getByText("This page isn't available")).toBeVisible();
     });
 
     test("has no edit controls on student records", async ({ page }) => {
@@ -281,6 +281,33 @@ test.describe("administrator", () => {
     await signIn(fac, "kavin.faculty", "kit@2025", "Faculty");
     await expect(fac).toHaveURL(/\/first-login$/);
     await expect(fac.getByRole("button", { name: /Continue with current password/ })).toBeVisible();
+    await ctx.close();
+  });
+
+  test("creates many accounts from a staff list and emails each person their login", async ({ page, browser }) => {
+    await page.goto("/admin/users");
+    const csv = [
+      "Full name,Email,Role,Username",
+      "Bulk One,bulk.one@gmail.com,Faculty,",
+      "Bulk Two,bulk.two@gmail.com,Head of Department,bulk.two.hod",
+      "No Email,,Faculty,",
+      "Too Senior,senior@gmail.com,Administrator,",
+    ].join("\n");
+    const since = Date.now();
+    await page.getByLabel("Staff list file").setInputFiles({ name: "staff.csv", mimeType: "text/csv", buffer: Buffer.from(csv, "utf-8") });
+    await expect(page.getByTestId("bulk-summary")).toContainText("2 ready to create");
+    await expect(page.getByRole("table", { name: "People to create" })).toContainText("You can't create Administrator accounts");
+    await page.getByRole("button", { name: "Create 2 accounts & email details" }).click();
+    await expect(page.getByTestId("bulk-result")).toContainText("Created 2 accounts and emailed 2");
+    await expect(page.getByTestId("user-row-bulk.one")).toContainText("Awaiting first sign-in");
+    await expect(page.getByTestId("user-row-bulk.two.hod")).toContainText("Head of Department");
+
+    // The emailed password really works.
+    const password = await waitForMailField("bulk.one@gmail.com", since, "Initial password");
+    const ctx = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+    const p2 = await ctx.newPage();
+    await signIn(p2, "bulk.one@gmail.com", password, "Faculty");
+    await expect(p2).toHaveURL(/\/first-login$/);
     await ctx.close();
   });
 

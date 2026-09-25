@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { AppState, ChartType, ColumnMapping, ParsedSource, ScoreBand } from "@/lib/types";
 import { inferColumns, detectMapping } from "@/lib/analysis/inferColumns";
 import { DEFAULT_BANDS } from "@/lib/analysis/scoreBands";
@@ -216,6 +216,8 @@ interface AppContextValue {
   resetDataset: () => Promise<void>;
   /** Re-fetch the shared dataset, discarding local unsaved view changes. */
   reloadDataset: () => Promise<void>;
+  /** Try again to save whatever failed to save (an upload or settings). */
+  retrySave: () => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -232,6 +234,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   });
   const savedConfigJson = useRef<string | null>(null);
   const configTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Bumped by "retry" to re-run the save effects below without changing anything else.
+  const [saveAttempt, setSaveAttempt] = useState(0);
+  const retrySave = useCallback(() => setSaveAttempt((n) => n + 1), []);
 
   const loadFromServer = useCallback(async () => {
     const { dataset } = await api<{ dataset: DatasetPayload | null }>("/api/dataset");
@@ -303,9 +308,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-    // Only a new source should trigger this; config edits are handled below.
+    // Only a new source (or a retry) should trigger this; config edits are handled below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canEdit, state.dirtySource, state.source]);
+  }, [canEdit, state.dirtySource, state.source, saveAttempt]);
 
   // Debounced save of mapping/bands/thresholds/department corrections for editors.
   const { activeSheetId, mapping, chartType, scoreBands, thresholdSupport, thresholdStrong, chartTitle, chartAccentIndex, normalizeDepartments, departmentOverrides } = state;
@@ -330,7 +335,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return () => {
       if (configTimer.current) clearTimeout(configTimer.current);
     };
-  }, [canEdit, config, state.datasetVersion, state.dirtySource]);
+  }, [canEdit, config, state.datasetVersion, state.dirtySource, saveAttempt]);
 
   const saveRowOp = useCallback(async (op: RowOp) => {
     const version = stateRef.current.datasetVersion;
@@ -354,8 +359,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ state, dispatch, canEdit, saveRowOp, resetDataset, reloadDataset: loadFromServer }),
-    [state, canEdit, saveRowOp, resetDataset, loadFromServer]
+    () => ({ state, dispatch, canEdit, saveRowOp, resetDataset, reloadDataset: loadFromServer, retrySave }),
+    [state, canEdit, saveRowOp, resetDataset, loadFromServer, retrySave]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

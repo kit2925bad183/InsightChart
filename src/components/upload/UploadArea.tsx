@@ -71,7 +71,12 @@ export function UploadArea({ compact = false }: { compact?: boolean }) {
           type="file"
           accept={SUPPORTED_EXTENSIONS.join(",")}
           className="hidden"
-          onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            // Reset so choosing the same file again (e.g. after fixing it) still loads it.
+            e.target.value = "";
+            if (file) handleFile(file);
+          }}
         />
         <Button variant="primary" size="sm" onClick={() => inputRef.current?.click()}>
           <UploadCloud size={15} /> Upload file
@@ -104,7 +109,12 @@ export function UploadArea({ compact = false }: { compact?: boolean }) {
         type="file"
         accept={SUPPORTED_EXTENSIONS.join(",")}
         className="hidden"
-        onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+        onChange={(e) => {
+            const file = e.target.files?.[0];
+            // Reset so choosing the same file again (e.g. after fixing it) still loads it.
+            e.target.value = "";
+            if (file) handleFile(file);
+          }}
       />
       <div className="rounded-full bg-[var(--accent-soft)] p-4">
         <UploadCloud size={28} className="text-[var(--accent)]" />

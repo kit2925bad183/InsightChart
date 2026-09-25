@@ -384,6 +384,24 @@ test.describe("InsightChart smoke test", () => {
     await expect(page.getByText("8 of 8 rows")).toBeVisible();
   });
 
+  test("is installable: manifest, icons, service worker and offline page", async ({ page }) => {
+    const manifest = await page.request.get("/manifest.webmanifest");
+    expect(manifest.ok()).toBe(true);
+    const m = (await manifest.json()) as { name: string; start_url: string; display: string; icons: { src: string; purpose?: string }[] };
+    expect(m).toMatchObject({ start_url: "/dashboard", display: "standalone" });
+    expect(m.icons.some((i) => i.purpose === "maskable")).toBe(true);
+    for (const icon of m.icons) expect((await page.request.get(icon.src)).headers()["content-type"]).toBe("image/png");
+
+    const sw = await page.request.get("/sw.js");
+    expect(sw.headers()["cache-control"]).toContain("no-store");
+    expect(await sw.text()).toContain("never caches pages or /api responses");
+    expect((await page.request.get("/offline.html")).ok()).toBe(true);
+
+    // The production build registers the worker, and it takes control of the page.
+    await page.goto("/dashboard");
+    await expect.poll(() => page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.active?.scriptURL ?? "")).toContain("/sw.js");
+  });
+
   test("column insights shows answer distribution for an unmapped column", async ({ page }) => {
     const csvWithQuestion = [
       "Name,Registration Number,Class / Department,Score,Q1",
@@ -409,11 +427,10 @@ test.describe("InsightChart smoke test", () => {
         ["/upload", "Upload & data preview"],
         ["/students", "Student Explorer"],
         ["/charts", "Chart setup"],
+        ["/filter", "Matching records"],
+        ["/student-performance", "Assessments to compare"],
         ["/departments", "Department analysis"],
-        ["/interventions", "Intervention Planner"],
-        ["/placement", "Placement Readiness"],
         ["/reports", "Reports & exports"],
-        ["/tasks", "Tasks & Calendar"],
         ["/alerts", "Ask about your data"],
       ];
       for (const [href, heading] of items) {
@@ -422,6 +439,8 @@ test.describe("InsightChart smoke test", () => {
         await expect(mainNav(page).locator(`a[href="${href}"]`)).toHaveAttribute("aria-current", "page");
         await expect(page.getByText(heading).first()).toBeVisible();
       }
+      // Pages that aren't built yet stay out of the navigation.
+      for (const href of ["/interventions", "/placement", "/tasks"]) await expect(mainNav(page).locator(`a[href="${href}"]`)).toHaveCount(0);
     });
 
     test("collapse state persists across a reload without changing sidebar width via JS flash", async ({ page }) => {

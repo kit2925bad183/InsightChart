@@ -48,13 +48,25 @@ export async function exportMultiPagePdf(nodes: HTMLElement[], filename: string)
   pdf!.save(`${filename}.pdf`);
 }
 
+// Cells starting with these run as formulas when the CSV is opened in Excel/Sheets, so a
+// crafted value in an uploaded file (e.g. a "name" of =HYPERLINK(...)) could act on whoever
+// opens the download. Same rule as the server's export (src/server/csv.ts).
+const FORMULA_PREFIX = /^[=+\-@\t\r]/;
+
+export function neutraliseFormula(v: unknown): unknown {
+  return typeof v === "string" && FORMULA_PREFIX.test(v) ? `'${v}` : v;
+}
+
 export function exportRowsCsv(rows: Record<string, unknown>[], filename: string) {
-  const ws = XLSX.utils.json_to_sheet(rows);
+  const safe = rows.map((r) => Object.fromEntries(Object.entries(r).map(([k, v]) => [neutraliseFormula(k) as string, neutraliseFormula(v)])));
+  const ws = XLSX.utils.json_to_sheet(safe);
   const csv = XLSX.utils.sheet_to_csv(ws);
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  // The byte-order mark makes Excel read UTF-8, so names in Tamil and other scripts open correctly.
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = `${filename}.csv`;
   link.click();
-  URL.revokeObjectURL(link.href);
+  // Revoking immediately can cancel the download in some browsers.
+  setTimeout(() => URL.revokeObjectURL(link.href), 10_000);
 }

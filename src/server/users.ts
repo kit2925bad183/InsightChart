@@ -1,10 +1,11 @@
 import { randomInt } from "node:crypto";
-import { ApiError } from "./http";
+import { z } from "zod";
+import { ApiError, zEmail } from "./http";
 import { audit, type Db } from "./db";
 import { hashPassword, validateInitialPassword } from "./auth/passwords";
 import { deliver, requireMailTransport } from "./email/mailer";
 import { accountCreatedEmail } from "./email/templates";
-import { ROLE_LABELS, canManageUser, creatableRoles, isRole, type Role } from "@/lib/auth/permissions";
+import { ROLES, ROLE_LABELS, canManageUser, creatableRoles, isRole, type Role } from "@/lib/auth/permissions";
 
 /** Any env-like map (process.env or a plain object in tests). */
 type Env = Record<string, string | undefined>;
@@ -109,6 +110,23 @@ async function uniqueUsername(db: Db, base: string) {
   for (let i = 2; await db.one("SELECT 1 FROM users WHERE lower(username) = lower($1)", [candidate]); i++) candidate = `${base}${i}`;
   return candidate;
 }
+
+/** What an admin submits to create one account (the form, and each row of a bulk import). */
+export const zNewUser = z.object({
+  displayName: z.string().trim().min(2, "Enter the person's full name.").max(100),
+  email: zEmail,
+  role: z.enum(ROLES),
+  /** Blank = the server generates one. Either way it is emailed to the person. */
+  initialPassword: z.string().max(200).optional(),
+  username: z
+    .string()
+    .trim()
+    .min(3, "Username must be at least 3 characters.")
+    .max(32)
+    .regex(/^[A-Za-z0-9._-]+$/, "Username can only contain letters, numbers, dots, dashes and underscores.")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+});
 
 export interface CreateUserInput {
   displayName: string;

@@ -8,7 +8,6 @@ import { VerificationFlow } from "@/components/auth/VerificationFlow";
 import { api } from "@/lib/api";
 
 function goTo(path: string) {
-  // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- deliberate full reload at a session boundary so the server layout renders with the new session
   window.location.assign(path);
 }
 

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { FormMessage, PasswordField, TextField } from "@/components/auth/fields";
 import { ROLE_LABELS, type Role } from "@/lib/auth/permissions";
 import { api } from "@/lib/api";
+import { safeRedirect } from "@/lib/safeRedirect";
 
 const ROLE_CHOICES: { role: Role; icon: LucideIcon; description: string }[] = [
   { role: "CREATOR_ADMIN", icon: Crown, description: "App owner — full control of the app and every account" },
@@ -14,11 +15,6 @@ const ROLE_CHOICES: { role: Role; icon: LucideIcon; description: string }[] = [
   { role: "HOD", icon: Building2, description: "View departments and students, download reports" },
   { role: "FACULTY", icon: GraduationCap, description: "View dashboards and students, download reports" },
 ];
-
-function safeNext(next: string | undefined) {
-  // Only same-site paths — never an absolute or protocol-relative URL (open redirect).
-  return next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\") ? next : "/dashboard";
-}
 
 export function LoginForm({ next, notice }: { next?: string; notice?: string }) {
   const [role, setRole] = useState<Role | null>(null);
@@ -32,8 +28,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
     setError(null);
     try {
       const r = await api<{ stage: "pending" | "active" }>("/api/auth/login", { method: "POST", body: { identifier, password, role }, redirectOn401: false });
-      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- deliberate full reload at a session boundary so the server layout renders with the new session
-      window.location.assign(r.stage === "pending" ? "/first-login" : safeNext(next));
+      window.location.assign(r.stage === "pending" ? "/first-login" : safeRedirect(next));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in failed.");
       setBusy(false);

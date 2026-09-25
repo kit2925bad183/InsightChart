@@ -10,6 +10,15 @@ function applyTheme(theme: Theme | null) {
   else document.documentElement.removeAttribute("data-theme");
 }
 
+function readStoredTheme(): Theme | null {
+  try {
+    return localStorage.getItem("insightchart-theme") as Theme | null;
+  } catch {
+    // Storage blocked (private mode / locked-down PC): follow the system theme.
+    return null;
+  }
+}
+
 export function ThemeToggle() {
   // Starts null (matches the server-rendered "no explicit theme" state) and reads the
   // real stored preference after mount, so this never disagrees with the anti-FOUC
@@ -35,7 +44,7 @@ export function ThemeToggle() {
     // renders would itself be a hydration mismatch. Starting from `null` (matching
     // the server) and syncing once mounted is the correct, if effect-based, fix.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTheme(localStorage.getItem("insightchart-theme") as Theme | null);
+    setTheme(readStoredTheme());
   }, []);
 
   const isDark = theme === "dark" || (theme === null && systemDark);
@@ -43,7 +52,9 @@ export function ThemeToggle() {
   const toggle = () => {
     const next: Theme = isDark ? "light" : "dark";
     setTheme(next);
-    localStorage.setItem("insightchart-theme", next);
+    try {
+      localStorage.setItem("insightchart-theme", next);
+    } catch {}
     applyTheme(next);
   };
 

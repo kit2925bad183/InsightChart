@@ -6,7 +6,7 @@ import { useApp } from "@/context/AppContext";
 /** Tells editors whether their changes reached the server, and tells view-only roles
  * that nothing they tweak is saved. */
 export function SyncStatus() {
-  const { state, canEdit } = useApp();
+  const { state, canEdit, retrySave } = useApp();
 
   if (!canEdit) {
     return (
@@ -24,9 +24,15 @@ export function SyncStatus() {
   }
   if (state.sync === "error") {
     return (
-      <span role="alert" className="inline-flex items-center gap-1 rounded-full bg-[var(--status-critical-soft)] px-2 py-1 text-[11px] font-medium text-[var(--status-critical)]" title={state.syncError}>
-        <CloudOff size={12} /> Not saved
-      </span>
+      <button
+        type="button"
+        role="alert"
+        onClick={retrySave}
+        className="inline-flex items-center gap-1 rounded-full bg-[var(--status-critical-soft)] px-2 py-1 text-[11px] font-medium text-[var(--status-critical)] hover:underline"
+        title={`${state.syncError ?? "Save failed."} Click to try again.`}
+      >
+        <CloudOff size={12} /> Not saved — retry
+      </button>
     );
   }
   if (state.sync === "saved") {

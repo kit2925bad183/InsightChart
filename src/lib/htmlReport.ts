@@ -148,7 +148,8 @@ export function buildInteractiveReportHtml(opts: BuildReportOptions): string {
   var TIER_SOFT = ${safeJsonForScript(TIER_SOFT)};
   var TIER_LABEL = ${safeJsonForScript(TIER_LABEL)};
 
-  function esc(s) { var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+  // Escapes quotes too: values are also placed inside HTML attributes (aria-label, data-band).
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function bandFor(score) {
     for (var i = 0; i < DATA.bands.length; i++) { var b = DATA.bands[i]; if (score >= b.min && score <= b.max) return b; }
     return DATA.bands[DATA.bands.length - 1];
@@ -214,7 +215,7 @@ export function buildInteractiveReportHtml(opts: BuildReportOptions): string {
           var h = Math.round((c / maxCount) * 100);
           return '<div class="barcol">' +
             '<div class="val">' + (c || '') + '</div>' +
-            '<div class="bar" role="button" tabindex="0" aria-label="' + esc(label) + ' scoring ' + esc(b.label) + ': ' + c + ' students" style="height:' + Math.max(h, c ? 3 : 0) + '%;background:' + TIER_COLORS[b.tier] + '" data-band="' + b.id + '"></div>' +
+            '<div class="bar" role="button" tabindex="0" aria-label="' + esc(label) + ' scoring ' + esc(b.label) + ': ' + c + ' students" style="height:' + Math.max(h, c ? 3 : 0) + '%;background:' + TIER_COLORS[b.tier] + '" data-band="' + esc(b.id) + '"></div>' +
             '<div class="lbl">' + esc(b.label) + '</div>' +
           '</div>';
         }).join('') + '</div>' +

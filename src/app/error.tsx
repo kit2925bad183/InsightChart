@@ -17,7 +17,7 @@ export default function RouteError({ error, reset }: { error: Error & { digest?:
         </div>
         <h1 className="text-lg font-semibold text-[var(--text-primary)]">Something went wrong</h1>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          InsightChart hit an unexpected error while rendering the dashboard. Your data never left your browser — try again, or reset to sample data.
+          InsightChart hit an unexpected error while showing this page. Your saved data is safe on the server — try again, or reload the page.
         </p>
         <button
           onClick={reset}

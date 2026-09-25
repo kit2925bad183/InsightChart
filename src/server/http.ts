@@ -4,6 +4,7 @@ import { z, ZodError, type ZodType } from "zod";
 import { getDb } from "./db";
 import { SESSION_COOKIE, getSessionByToken, type SessionContext } from "./auth/sessions";
 import { can, type Permission } from "@/lib/auth/permissions";
+import { configuredSiteUrl } from "@/lib/siteUrl";
 
 export class ApiError extends Error {
   constructor(
@@ -153,8 +154,8 @@ export const zOtp = z
   .trim()
   .regex(/^\d{6}$/, "Enter the 6-digit code from the email.");
 
-/** Public address of the app for links in emails: APP_URL when set, else the address this request came in on. */
+/** Public address of the app for links in emails: APP_URL, else Vercel's production
+ * domain, and only as a last resort (local development) the address this request used. */
 export function appUrl(req: Request): string {
-  const configured = process.env.APP_URL?.trim().replace(/\/+$/, "");
-  return configured || new URL(req.url).origin;
+  return configuredSiteUrl() ?? new URL(req.url).origin;
 }

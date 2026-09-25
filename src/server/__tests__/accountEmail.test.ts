@@ -10,6 +10,7 @@ import { generateInitialPassword } from "../users";
 import { validateInitialPassword } from "../auth/passwords";
 import * as usersRoute from "@/app/api/users/route";
 import * as resendRoute from "@/app/api/users/[id]/resend-details/route";
+import * as bulkRoute from "@/app/api/users/bulk/route";
 
 const PASSWORD = "Test#Pass2026";
 const meta = { ip: "127.0.0.1" };
@@ -123,6 +124,42 @@ describe("resending sign-in details", () => {
     expect((await resend(done)).status).toBe(400);
     await addUser(db, { username: "hod", role: "HOD", password: PASSWORD, email: "h@gmail.com", verified: true });
     expect((await resend(done, await cookieFor(db, "hod", PASSWORD))).status).toBe(403);
+  });
+});
+
+describe("bulk account creation", () => {
+  const bulk = async (users: unknown[], cookie = creator) => {
+    const res = await bulkRoute.POST(request("POST", "/api/users/bulk", { cookie, body: { users } }), undefined);
+    return { status: res.status, body: (await res.json()) as { results: { index: number; ok: boolean; error?: string; username?: string; email?: { sent: boolean } }[] } };
+  };
+
+  it("creates each valid person, emails them, and reports the rest row by row", async () => {
+    const { status, body } = await bulk([
+      { displayName: "Meena Rao", email: "meena@gmail.com", role: "HOD" },
+      { displayName: "Kavin", email: "kavin@gmail.com", role: "FACULTY", username: "kavin.cse" },
+      { displayName: "X", email: "bad", role: "FACULTY" },
+      { displayName: "Dup", email: "meena@gmail.com", role: "FACULTY" },
+      { displayName: "Sneaky", email: "s@gmail.com", role: "CREATOR_ADMIN" },
+    ]);
+    expect(status).toBe(200);
+    expect(body.results.map((r) => [r.index, r.ok, r.ok ? r.username : r.error])).toEqual([
+      [0, true, "meena"],
+      [1, true, "kavin.cse"],
+      [2, false, "Enter the person's full name."],
+      [3, false, "That email address is already linked to another account."],
+      [4, false, "You are not allowed to create that type of account."],
+    ]);
+    expect(body.results[0].email).toEqual({ sent: true, to: "meena@gmail.com" });
+    expect(mail.map((m) => m.to)).toEqual(["meena@gmail.com", "kavin@gmail.com"]);
+    expect(detail(mail[1], "Username")).toBe("kavin.cse");
+  });
+
+  it("refuses read-only roles and oversized batches", async () => {
+    await addUser(db, { username: "hod", role: "HOD", password: PASSWORD, email: "h@gmail.com", verified: true });
+    expect((await bulk([{ displayName: "A B", email: "ab@gmail.com", role: "FACULTY" }], await cookieFor(db, "hod", PASSWORD))).status).toBe(403);
+    const eleven = Array.from({ length: 11 }, (_, i) => ({ displayName: `P ${i}`, email: `p${i}@gmail.com`, role: "FACULTY" }));
+    expect((await bulk(eleven)).status).toBe(400);
+    expect(mail).toHaveLength(0);
   });
 });
 

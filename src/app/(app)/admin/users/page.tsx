@@ -10,6 +10,7 @@ import { FormMessage, PasswordField, TextField } from "@/components/auth/fields"
 import { ROLE_LABELS, canManageUser, type Role } from "@/lib/auth/permissions";
 import { useSession } from "@/lib/auth/session";
 import { api } from "@/lib/api";
+import { BulkCreateAccounts } from "@/components/admin/BulkCreateAccounts";
 
 interface ListedUser {
   id: number;
@@ -28,6 +29,7 @@ type EmailResult = { sent: true; to: string } | { sent: false; to: string; error
 interface ListResponse {
   users: ListedUser[];
   creatableRoles: Role[];
+  allowedEmailDomains: string[] | null;
 }
 
 function CreateUserForm({ roles, onCreated }: { roles: Role[]; onCreated: (u: ListedUser) => void }) {
@@ -191,6 +193,13 @@ export default function UserManagementPage() {
             subtitle={data.creatableRoles.includes("ADMINISTRATOR") ? "Add an Administrator, HOD or Faculty member" : "Add an HOD or Faculty member — they get view and download access only"}
           />
           <CreateUserForm roles={data.creatableRoles} onCreated={(u) => setData((d) => (d ? { ...d, users: [...d.users, u] } : d))} />
+        </Card>
+      )}
+
+      {can("users:create") && data && (
+        <Card>
+          <CardHeader title="Add many accounts" subtitle="Upload a staff list — everyone gets their own sign-in details by email" />
+          <BulkCreateAccounts roles={data.creatableRoles} existing={data.users} allowedDomains={data.allowedEmailDomains} onDone={load} />
         </Card>
       )}
 

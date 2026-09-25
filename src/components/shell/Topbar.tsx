@@ -6,6 +6,7 @@ import { Menu, Bell } from "lucide-react";
 import { isNavItemActive, navItemsFor } from "@/lib/nav";
 import { useSession } from "@/lib/auth/session";
 import { SyncStatus } from "./SyncStatus";
+import { InstallAppButton } from "@/components/pwa/InstallApp";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UploadArea } from "@/components/upload/UploadArea";
 import { useNotificationCounts } from "@/lib/notifications";
@@ -71,6 +72,7 @@ export function Topbar({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
               </div>
             )}
           </div>
+          <InstallAppButton />
           <SyncStatus />
           <ThemeToggle />
           <UploadArea compact />

@@ -41,7 +41,11 @@ const nextConfig: NextConfig = {
     root: path.join(__dirname),
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // The service worker must never be served from a cache, or app updates would stall.
+      { source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }] },
+    ];
   },
 };
 

@@ -16,8 +16,12 @@ export function useSidebarCollapsed(): [boolean, (v: boolean) => void] {
   const [collapsed, setCollapsedState] = useState(false);
 
   useEffect(() => {
+    let stored = false;
+    try {
+      stored = localStorage.getItem(SIDEBAR_KEY) === "1";
+    } catch {}
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setCollapsedState(localStorage.getItem(SIDEBAR_KEY) === "1");
+    setCollapsedState(stored);
   }, []);
 
   const setCollapsed = (v: boolean) => {
