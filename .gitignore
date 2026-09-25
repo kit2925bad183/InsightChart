@@ -50,5 +50,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Vercel CLI project link
 .vercel
-.env*
