@@ -1,0 +1,10 @@
+# Never upload secrets, local databases or test output with `vercel deploy`.
+# Settings come from the Vercel project's Environment Variables instead.
+.env*
+!.env.example
+data/
+.e2e/
+test-results/
+playwright-report/
+node_modules/
+.next/
