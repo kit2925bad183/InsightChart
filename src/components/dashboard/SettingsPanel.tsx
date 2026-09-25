@@ -14,7 +14,7 @@ import type { ScoreBand } from "@/lib/types";
 const TIER_OPTIONS: ScoreBand["tier"][] = ["support", "developing", "strong"];
 
 export function SettingsPanel() {
-  const { state, dispatch } = useApp();
+  const { state, dispatch, canEdit } = useApp();
   const [expanded, setExpanded] = useState(false);
   const [deptExpanded, setDeptExpanded] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
@@ -28,7 +28,7 @@ export function SettingsPanel() {
     <Card>
       <CardHeader
         title="Thresholds, bands & colours"
-        subtitle="Tune how performance is measured and displayed"
+        subtitle={canEdit ? "Tune how performance is measured and displayed — saved for everyone" : "Adjust your own view — changes aren't saved and don't affect anyone else"}
         actions={
           <Button size="sm" variant="ghost" onClick={() => setExpanded((v) => !v)}>
             {expanded ? "Hide bands" : "Edit bands"}
@@ -70,7 +70,7 @@ export function SettingsPanel() {
         />
       </label>
 
-      {state.normalizeDepartments && (
+      {canEdit && state.normalizeDepartments && (
         <div className="mb-4">
           <Button size="sm" variant="ghost" onClick={() => setDeptExpanded((v) => !v)}>
             {deptExpanded ? "Hide department mapping" : "Edit department mapping"}
@@ -169,9 +169,11 @@ export function SettingsPanel() {
         >
           <Download size={13} /> Save workspace
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => importInputRef.current?.click()}>
-          <Upload size={13} /> Load workspace
-        </Button>
+        {canEdit && (
+          <Button size="sm" variant="ghost" onClick={() => importInputRef.current?.click()}>
+            <Upload size={13} /> Load workspace
+          </Button>
+        )}
         <input
           ref={importInputRef}
           type="file"

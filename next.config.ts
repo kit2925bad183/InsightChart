@@ -3,9 +3,9 @@ import path from "path";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// InsightChart is fully client-side (no backend, no user auth, no cookies of value),
-// so this CSP is mainly a defense-in-depth measure against a compromised/malicious
-// uploaded-file-triggered script injection. 'unsafe-inline' on script/style is required
+// InsightChart now has signed-in sessions (an httpOnly session cookie) and a server-side
+// dataset, so this CSP guards against script injection (e.g. from a malicious uploaded
+// file's contents) reaching an authenticated page. 'unsafe-inline' on script/style is required
 // by Next.js's inline hydration payload and by our extensive use of inline `style={}}`
 // for dynamic chart colors — tightening further would need a nonce-based middleware.
 // 'unsafe-eval' is added in dev only: React's dev-mode uses eval() to reconstruct
@@ -34,6 +34,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // The embedded Postgres ships a WebAssembly build and data files it loads from its own
+  // package folder at runtime, so it must be required from node_modules, not bundled.
+  serverExternalPackages: ["@electric-sql/pglite"],
   turbopack: {
     root: path.join(__dirname),
   },

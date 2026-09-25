@@ -8,6 +8,7 @@ import { SummaryCards } from "@/components/dashboard/SummaryCards";
 import { ScoreDistributionChart } from "@/components/dashboard/ScoreDistributionChart";
 import { RecentUploadsCard } from "@/components/dashboard/RecentUploadsCard";
 import { ImportantAlertsCard } from "@/components/dashboard/ImportantAlertsCard";
+import { RoleWelcome } from "@/components/dashboard/RoleWelcome";
 import { StudentListModal, StudentDetailModal } from "@/components/dashboard/StudentModals";
 import type { ScoreBand } from "@/lib/types";
 import type { StudentRecord } from "@/lib/analysis/stats";
@@ -23,13 +24,19 @@ export default function DashboardPage() {
   }
 
   if (!activeSheet) {
-    return <UploadArea />;
+    return (
+      <>
+        <RoleWelcome />
+        <UploadArea />
+      </>
+    );
   }
 
   const bandStudents = selectedBand ? records.filter((r) => r.score >= selectedBand.min && r.score <= selectedBand.max) : [];
 
   return (
     <>
+      <RoleWelcome />
       {state.source && <InlineWarnings warnings={state.source.warnings} />}
       <SummaryCards records={records} supportThreshold={state.thresholdSupport} strongThreshold={state.thresholdStrong} />
       <ScoreDistributionChart records={records} bands={state.scoreBands} onSelectBand={setSelectedBand} />

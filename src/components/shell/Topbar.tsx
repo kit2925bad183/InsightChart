@@ -3,19 +3,24 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, Bell } from "lucide-react";
-import { NAV_ITEMS } from "@/lib/nav";
+import { isNavItemActive, navItemsFor } from "@/lib/nav";
+import { useSession } from "@/lib/auth/session";
+import { SyncStatus } from "./SyncStatus";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UploadArea } from "@/components/upload/UploadArea";
 import { useNotificationCounts } from "@/lib/notifications";
 import { Badge } from "@/components/ui/Select";
 import Link from "next/link";
 
+const EXTRA_TITLES: Record<string, string> = { "/settings": "Settings", "/account": "My Account", "/forbidden": "Access denied" };
+
 export function Topbar({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
   const pathname = usePathname();
   const { alertsCount, tasksDueCount, total } = useNotificationCounts();
   const [bellOpen, setBellOpen] = useState(false);
 
-  const currentTitle = NAV_ITEMS.find((i) => pathname === i.href || (i.href === "/students" && pathname.startsWith("/students")))?.label ?? "InsightChart";
+  const { user } = useSession();
+  const currentTitle = navItemsFor(user.role).find((i) => isNavItemActive(i, pathname))?.label ?? EXTRA_TITLES[pathname] ?? "InsightChart";
 
   return (
     <header
@@ -66,6 +71,7 @@ export function Topbar({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
               </div>
             )}
           </div>
+          <SyncStatus />
           <ThemeToggle />
           <UploadArea compact />
         </div>

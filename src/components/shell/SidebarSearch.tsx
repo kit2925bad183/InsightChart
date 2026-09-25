@@ -3,12 +3,14 @@
 import { useId, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { NAV_ITEMS } from "@/lib/nav";
+import { navItemsFor } from "@/lib/nav";
+import { useSession } from "@/lib/auth/session";
 
-/** Navigation search, not a data search — filters NAV_ITEMS by label. Data/student
+/** Navigation search, not a data search — filters the pages this role can open by label. Data/student
  * search lives on the Student Explorer page. */
 export function SidebarSearch({ collapsed, onExpandRequest }: { collapsed: boolean; onExpandRequest?: () => void }) {
   const router = useRouter();
+  const { role } = useSession().user;
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -18,8 +20,8 @@ export function SidebarSearch({ collapsed, onExpandRequest }: { collapsed: boole
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
-    return NAV_ITEMS.filter((i) => i.label.toLowerCase().includes(q));
-  }, [query]);
+    return navItemsFor(role).filter((i) => i.label.toLowerCase().includes(q));
+  }, [query, role]);
 
   const go = (href: string) => {
     router.push(href);

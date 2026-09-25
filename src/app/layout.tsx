@@ -3,8 +3,6 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorListener } from "@/components/ErrorListener";
-import { AppProvider } from "@/context/AppContext";
-import { AppShell } from "@/components/shell/AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,7 +20,8 @@ export const metadata: Metadata = {
     title: "InsightChart — Automated Assessment Analytics",
     description: "Upload student assessment data and get instant score-distribution dashboards, department comparisons, and reports.",
   },
-  robots: { index: true, follow: true },
+  // Staff-only app behind a sign-in wall — nothing here is meant for search engines.
+  robots: { index: false, follow: false },
 };
 
 // Runs before paint, as the first thing in <body>, so the stored theme preference
@@ -51,11 +50,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <Script id="sidebar-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
         <ErrorListener />
-        <AppProvider>
-          <AppShell>{children}</AppShell>
-        </AppProvider>
-        <Analytics />
-        <SpeedInsights />
+        {children}
+        {/* These load /_vercel/* scripts that only exist on Vercel deployments — elsewhere
+            (e.g. `next start` on a college server) they'd 404 on every page. */}
+        {process.env.VERCEL && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );

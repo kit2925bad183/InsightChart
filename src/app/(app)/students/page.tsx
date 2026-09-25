@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import Link from "next/link";
+import { Search, Plus, BarChart3 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { RecordEditorModal } from "@/components/data/RecordEditorModal";
 import { useApp, useRecords } from "@/context/AppContext";
 import { UploadArea } from "@/components/upload/UploadArea";
 import { Card, CardHeader } from "@/components/ui/Card";
@@ -14,7 +17,8 @@ import { bandForScore } from "@/lib/analysis/scoreBands";
  * rank, score history (from upload history), and staff notes lands in Phase 2 once
  * that persistent data layer exists. */
 export default function StudentsPage() {
-  const { state, activeSheet } = useApp();
+  const { state, activeSheet, canEdit } = useApp();
+  const [adding, setAdding] = useState(false);
   const records = useRecords();
   const [query, setQuery] = useState("");
   const [department, setDepartment] = useState("");
@@ -41,7 +45,17 @@ export default function StudentsPage() {
   return (
     <>
       <Card>
-        <CardHeader title="Student Explorer" subtitle={`${filtered.length} of ${records.length} students`} />
+        <CardHeader
+          title="Student Explorer"
+          subtitle={`${filtered.length} of ${records.length} students`}
+          actions={
+            canEdit && state.datasetVersion !== null ? (
+              <Button size="sm" variant="outline" onClick={() => setAdding(true)}>
+                <Plus size={13} /> Add student
+              </Button>
+            ) : undefined
+          }
+        />
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
           <label className="flex flex-col gap-1 text-xs font-medium text-[var(--text-secondary)] col-span-2 sm:col-span-1">
             Search
@@ -79,6 +93,7 @@ export default function StudentsPage() {
                 <th className="px-3 py-2 font-semibold text-[var(--text-secondary)]">Registration</th>
                 <th className="px-3 py-2 font-semibold text-[var(--text-secondary)]">Department</th>
                 <th className="px-3 py-2 font-semibold text-[var(--text-secondary)]">Score</th>
+                <th className="px-3 py-2 font-semibold text-[var(--text-secondary)] text-right">Performance</th>
               </tr>
             </thead>
             <tbody>
@@ -92,11 +107,21 @@ export default function StudentsPage() {
                   <td className="px-3 py-2 tabular text-[var(--text-secondary)]">{s.registration}</td>
                   <td className="px-3 py-2 text-[var(--text-secondary)]">{s.department}</td>
                   <td className="px-3 py-2 tabular font-semibold">{s.score}</td>
+                  <td className="px-3 py-1.5 text-right">
+                    <Link
+                      href={`/student-performance?student=${encodeURIComponent(s.registration && s.registration !== "—" ? s.registration : s.name)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Performance chart for ${s.name}`}
+                      className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] px-2 py-1 text-[11px] font-medium text-[var(--accent-strong)] hover:border-[var(--accent)] hover:bg-[var(--accent-soft)]"
+                    >
+                      <BarChart3 size={12} /> Chart
+                    </Link>
+                  </td>
                 </tr>
               ))}
               {!filtered.length && (
                 <tr>
-                  <td colSpan={4} className="px-3 py-6 text-center text-[var(--text-muted)]">
+                  <td colSpan={5} className="px-3 py-6 text-center text-[var(--text-muted)]">
                     No students match your filters.
                   </td>
                 </tr>
@@ -109,6 +134,7 @@ export default function StudentsPage() {
         )}
       </Card>
 
+      {adding && <RecordEditorModal sheet={activeSheet} rowIndex={null} onClose={() => setAdding(false)} />}
       {selected && <StudentDetailModal student={selected} onClose={() => setSelected(null)} />}
     </>
   );

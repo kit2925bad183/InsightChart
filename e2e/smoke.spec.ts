@@ -19,7 +19,17 @@ const KNOWN_DEV_ONLY_NOISE = [/Encountered two children with the same key/];
 
 // Fails any test where the page logged a console error or threw an uncaught
 // exception — a UI assertion can pass while masking a real underlying bug.
-const test = base.extend<{ failOnConsoleErrors: void }>({
+// These specs run signed in as an Administrator (see playwright.config.ts). The dataset
+// is shared server state, so each test starts from the built-in sample data.
+const test = base.extend<{ failOnConsoleErrors: void; freshDataset: void }>({
+  freshDataset: [
+    async ({ page }, use) => {
+      const res = await page.request.delete("/api/dataset");
+      expect(res.ok(), "resetting the shared dataset").toBe(true);
+      await use();
+    },
+    { auto: true },
+  ],
   failOnConsoleErrors: [
     async ({ page }, use) => {
       const errors: string[] = [];
@@ -38,10 +48,9 @@ const test = base.extend<{ failOnConsoleErrors: void }>({
 // landmark, distinguished by aria-label — always scope through this helper on desktop.
 const mainNav = (page: import("@playwright/test").Page) => page.locator('nav[aria-label="Main navigation"]');
 
-// AppProvider's dataset lives only in memory (uploaded files/settings persist to
-// IndexedDB on an 800ms debounce, mock-source changes never persist at all) — a hard
-// `page.goto()` mid-test reboots the whole app from scratch, same as a real page
-// refresh would. Use this for any in-test navigation that must preserve state, the
+// Uploads are saved to the server, but view state (search, NL results, unsaved sample-data
+// tweaks) lives in memory — a hard `page.goto()` mid-test reboots the app like a real
+// refresh would. Use this for any in-test navigation that must preserve that state, the
 // same way a real user clicking the sidebar does.
 async function navTo(page: import("@playwright/test").Page, href: string) {
   await mainNav(page).locator(`a[href="${href}"]`).click();
@@ -218,6 +227,8 @@ test.describe("InsightChart smoke test", () => {
       mimeType: "text/csv",
       buffer: Buffer.from(SAMPLE_CSV, "utf-8"),
     });
+    // A newly loaded file resets the question box by design — wait for it to land first.
+    await expect(page.getByText("Eve, Alice, Bob, Carol, Dave")).toBeVisible();
     await page.getByPlaceholder(/Show students below/).fill("Show CSE students below 60 marks");
     await page.getByRole("button", { name: "Ask" }).click();
     await expect(page.getByText(/in CSE scored below 60/)).toBeVisible();
@@ -287,6 +298,41 @@ test.describe("InsightChart smoke test", () => {
     await expect(page.getByLabel("Chart title")).toHaveValue("My Saved Title");
   });
 
+  test("student performance compares one student across files test-wise, day-wise and week-wise", async ({ page }) => {
+    const csv = (score: number) => ["Name,Registration Number,Class / Department,Score", `Zed Tester,E2E 777,CSE,${score}`, "Other One,E2E001,CSE,80"].join("\n");
+    await page.goto("/student-performance");
+    await page.getByLabel("Add assessment files").setInputFiles([
+      { name: "Unit Test 1 2026-09-07.csv", mimeType: "text/csv", buffer: Buffer.from(csv(55), "utf-8") },
+      { name: "Unit Test 2 09-09-2026.csv", mimeType: "text/csv", buffer: Buffer.from(csv(65), "utf-8") },
+      { name: "Unit Test 3 2026-09-14.csv", mimeType: "text/csv", buffer: Buffer.from(csv(70), "utf-8") },
+    ]);
+    // Dates are read from the file names.
+    await expect(page.getByLabel("Date of Unit Test 2 09-09-2026")).toHaveValue("2026-09-09");
+
+    await page.getByLabel("Search student by name or register number").fill("e2e777");
+    await page.getByRole("button", { name: "Chart Zed Tester" }).click();
+    await expect(page).toHaveURL(/student=E2E(\+|%20)777/);
+    await expect(page.getByTestId("performance-summary")).toContainText("Improved by 15 marks");
+
+    await page.getByRole("button", { name: "Day-wise" }).click();
+    await expect(page).toHaveURL(/by=day/);
+    const table = page.getByRole("table", { name: /day-wise/ });
+    await expect(table.getByRole("row")).toHaveCount(4);
+    await expect(table).toContainText("9 Sep 2026");
+    // The built-in sample dataset has no date, so it's left out and flagged.
+    await expect(page.getByTestId("undated-note")).toContainText("Sample data");
+
+    await page.getByRole("button", { name: "Week-wise" }).click();
+    const weeks = page.getByRole("table", { name: /week-wise/ });
+    await expect(weeks.getByRole("row")).toHaveCount(3);
+    await expect(weeks.getByRole("row").nth(1)).toContainText("Week of 7 Sep 2026");
+    await expect(weeks.getByRole("row").nth(1)).toContainText("60");
+
+    await page.getByRole("button", { name: "Bars" }).click();
+    await expect(page).toHaveURL(/view=bar/);
+    await expect(page.getByRole("img", { name: /Bar chart of Zed Tester/ })).toBeVisible();
+  });
+
   test("column insights shows answer distribution for an unmapped column", async ({ page }) => {
     const csvWithQuestion = [
       "Name,Registration Number,Class / Department,Score,Q1",
@@ -335,22 +381,6 @@ test.describe("InsightChart smoke test", () => {
       await expect(page.locator("html")).toHaveAttribute("data-sidebar", "collapsed");
       await page.getByRole("button", { name: "Expand sidebar" }).click();
       await expect(page.locator("html")).toHaveAttribute("data-sidebar", "expanded");
-    });
-
-    test("switching the acting-as role hides and restores role-gated nav items everywhere it's shown", async ({ page }) => {
-      await page.goto("/dashboard");
-      const roleSelect = page.locator("select").filter({ has: page.locator("option", { hasText: "Faculty" }) }).first();
-      await roleSelect.selectOption("faculty");
-      await expect(mainNav(page).locator('a[href="/departments"]')).toHaveCount(0);
-
-      // Same role reflected on an unrelated page (Settings) confirms it's synced, not
-      // just a local component state that happened to update.
-      await page.goto("/settings");
-      await expect(page.locator("select").first()).toHaveValue("faculty");
-      await expect(mainNav(page).locator('a[href="/departments"]')).toHaveCount(0);
-
-      await page.locator("select").first().selectOption("administrator");
-      await expect(mainNav(page).locator('a[href="/departments"]')).toHaveCount(1);
     });
 
     test("mobile drawer opens, traps focus, and closes on Escape restoring focus to the hamburger", async ({ page }) => {

@@ -15,6 +15,18 @@ export function ThemeToggle() {
   // real stored preference after mount, so this never disagrees with the anti-FOUC
   // inline script in layout.tsx (which already applied the right attribute pre-paint).
   const [theme, setTheme] = useState<Theme | null>(null);
+  // OS preference is also only known on the client, so it's read post-mount too —
+  // querying matchMedia during render made the first client render disagree with SSR.
+  const [systemDark, setSystemDark] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSystemDark(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setSystemDark(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     // Deliberately reading localStorage post-mount rather than in a lazy useState
@@ -26,7 +38,7 @@ export function ThemeToggle() {
     setTheme(localStorage.getItem("insightchart-theme") as Theme | null);
   }, []);
 
-  const isDark = theme === "dark" || (theme === null && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const isDark = theme === "dark" || (theme === null && systemDark);
 
   const toggle = () => {
     const next: Theme = isDark ? "light" : "dark";

@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { UploadCloud, FileSpreadsheet, AlertTriangle } from "lucide-react";
+import { UploadCloud, FileSpreadsheet, AlertTriangle, Lock } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { parseFile, SUPPORTED_EXTENSIONS } from "@/lib/parsers";
 import { Button } from "@/components/ui/Button";
 
 export function UploadArea({ compact = false }: { compact?: boolean }) {
-  const { dispatch } = useApp();
+  const { state, dispatch, canEdit } = useApp();
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,7 +41,29 @@ export function UploadArea({ compact = false }: { compact?: boolean }) {
     return () => window.removeEventListener("insightchart:trigger-upload", onTrigger);
   }, [compact]);
 
+  // Uploading replaces the shared dataset, so only editors get the control. (The API
+  // rejects uploads from other roles regardless of what the browser sends.)
+  if (!canEdit) {
+    if (compact) return null;
+    return (
+      <div className="card fade-in flex flex-col items-center justify-center gap-3 p-10 sm:p-16 text-center">
+        <div className="rounded-full bg-[var(--surface-muted)] p-4">
+          <Lock size={26} className="text-[var(--text-muted)]" />
+        </div>
+        <p className="text-sm font-semibold text-[var(--text-primary)]">
+          {state.source ? "This view needs data that isn't in the current dataset" : "No dataset has been published yet"}
+        </p>
+        <p className="text-xs text-[var(--text-muted)] max-w-sm">
+          Uploading and correcting records is done by an Administrator. You can view and download everything once it&apos;s published.
+        </p>
+      </div>
+    );
+  }
+
+  // Until the shared dataset has arrived, an upload could race with (and be replaced by)
+  // the server's copy — so the uploader only appears once loading is done.
   if (compact) {
+    if (!state.bootstrapped) return null;
     return (
       <>
         <input
@@ -92,7 +114,7 @@ export function UploadArea({ compact = false }: { compact?: boolean }) {
         <p className="text-xs text-[var(--text-muted)] mt-1">Excel (.xlsx, .xls), CSV, PDF, Word (.docx), TXT, and images with tables</p>
       </div>
       <div className="flex items-center gap-2 text-[11px] text-[var(--text-muted)] mt-1">
-        <FileSpreadsheet size={13} /> Files are read in your browser — nothing is uploaded to a server
+        <FileSpreadsheet size={13} /> Files are read in your browser; the extracted table is saved to the server for signed-in staff
       </div>
     </div>
   );

@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored third-party bundles (Tesseract OCR worker/wasm loaders).
+    "public/tesseract/**",
+    // Test artifacts.
+    "test-results/**",
+    "playwright-report/**",
   ]),
 ]);
 

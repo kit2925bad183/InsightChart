@@ -3,9 +3,11 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, BarChart3 } from "lucide-react";
-import { NAV_ITEMS } from "@/lib/nav";
-import { useActingAsRole } from "@/lib/uiPrefs";
+import { X, BarChart3, LogOut } from "lucide-react";
+import { ROLE_LABELS } from "@/lib/auth/permissions";
+import { signOut } from "./SidebarProfile";
+import { isNavItemActive, navItemsFor } from "@/lib/nav";
+import { useSession } from "@/lib/auth/session";
 import { useNotificationCounts } from "@/lib/notifications";
 import { Badge } from "@/components/ui/Select";
 
@@ -24,9 +26,9 @@ const FOCUSABLE_SELECTOR =
 export function MobileSidebarDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const [role] = useActingAsRole();
+  const { user } = useSession();
   const { alertsCount, tasksDueCount } = useNotificationCounts();
-  const visibleItems = NAV_ITEMS.filter((i) => i.roles.includes(role));
+  const visibleItems = navItemsFor(user.role);
 
   useEffect(() => {
     if (!open) return;
@@ -102,7 +104,7 @@ export function MobileSidebarDrawer({ open, onClose }: { open: boolean; onClose:
         <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
           {visibleItems.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href || (item.href === "/students" && pathname.startsWith("/students"));
+            const active = isNavItemActive(item, pathname);
             const count = badgeFor(item.badgeSource);
             return (
               <Link
@@ -123,6 +125,23 @@ export function MobileSidebarDrawer({ open, onClose }: { open: boolean; onClose:
             );
           })}
         </nav>
+        <div className="border-t border-[var(--border)] px-4 py-3 text-xs">
+          <p className="font-semibold text-[var(--text-primary)] truncate">{user.displayName}</p>
+          <p className="text-[11px] text-[var(--text-muted)] mb-2">{ROLE_LABELS[user.role]}</p>
+          <div className="flex items-center justify-between">
+            <div className="flex gap-3">
+              <Link href="/account" onClick={onClose} className="text-[var(--accent-strong)] font-medium">
+                Account
+              </Link>
+              <Link href="/settings" onClick={onClose} className="text-[var(--accent-strong)] font-medium">
+                Settings
+              </Link>
+            </div>
+            <button type="button" onClick={() => signOut()} className="flex items-center gap-1 text-[var(--text-muted)]">
+              <LogOut size={12} /> Sign out
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

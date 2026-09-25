@@ -9,29 +9,44 @@ import {
   FileDown,
   CalendarClock,
   AlertTriangle,
+  UserCog,
+  TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import type { Role } from "./roles";
+import { can, type Permission, type Role } from "./auth/permissions";
 
 export interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  roles: Role[];
+  /** Shown only to roles holding this permission — the same rule the proxy enforces. */
+  permission: Permission;
+  /** Label for roles that can only view (no upload/edit). */
+  readOnlyLabel?: string;
   badgeSource?: "tasks" | "alerts";
 }
 
-const ALL_ROLES: Role[] = ["faculty", "mentor", "placement-officer", "department-head", "administrator"];
-
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ALL_ROLES },
-  { href: "/upload", label: "Upload & Data Preview", icon: UploadCloud, roles: ALL_ROLES },
-  { href: "/students", label: "Student Explorer", icon: Users2, roles: ALL_ROLES },
-  { href: "/charts", label: "Interactive Charts", icon: PieChart, roles: ALL_ROLES },
-  { href: "/departments", label: "Department Comparison", icon: Scale, roles: ["mentor", "department-head", "administrator"] },
-  { href: "/interventions", label: "Intervention Planner", icon: LifeBuoy, roles: ["mentor", "department-head", "administrator"] },
-  { href: "/placement", label: "Placement Readiness", icon: ShieldCheck, roles: ["placement-officer", "department-head", "administrator"] },
-  { href: "/reports", label: "Reports & Exports", icon: FileDown, roles: ALL_ROLES, badgeSource: undefined },
-  { href: "/tasks", label: "Tasks & Calendar", icon: CalendarClock, roles: ALL_ROLES, badgeSource: "tasks" },
-  { href: "/alerts", label: "Alerts & Insights", icon: AlertTriangle, roles: ALL_ROLES, badgeSource: "alerts" },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, permission: "data:view" },
+  { href: "/upload", label: "Upload & Data Preview", readOnlyLabel: "Data Preview", icon: UploadCloud, permission: "data:view" },
+  { href: "/students", label: "Student Explorer", icon: Users2, permission: "data:view" },
+  { href: "/student-performance", label: "Student Performance", icon: TrendingUp, permission: "data:view" },
+  { href: "/charts", label: "Interactive Charts", icon: PieChart, permission: "data:view" },
+  { href: "/departments", label: "Department Comparison", icon: Scale, permission: "analysis:departments" },
+  { href: "/interventions", label: "Intervention Planner", icon: LifeBuoy, permission: "analysis:departments" },
+  { href: "/placement", label: "Placement Readiness", icon: ShieldCheck, permission: "analysis:placement" },
+  { href: "/reports", label: "Reports & Exports", icon: FileDown, permission: "reports:download" },
+  { href: "/tasks", label: "Tasks & Calendar", icon: CalendarClock, permission: "data:view", badgeSource: "tasks" },
+  { href: "/alerts", label: "Alerts & Insights", icon: AlertTriangle, permission: "data:view", badgeSource: "alerts" },
+  { href: "/admin/users", label: "User Management", icon: UserCog, permission: "users:view" },
 ];
+
+/** The nav as a given role sees it: filtered by permission, with read-only labels applied. */
+export function navItemsFor(role: Role): NavItem[] {
+  const editor = can(role, "records:edit");
+  return NAV_ITEMS.filter((i) => can(role, i.permission)).map((i) => (!editor && i.readOnlyLabel ? { ...i, label: i.readOnlyLabel } : i));
+}
+
+export function isNavItemActive(item: NavItem, pathname: string) {
+  return pathname === item.href || pathname.startsWith(item.href + "/");
+}

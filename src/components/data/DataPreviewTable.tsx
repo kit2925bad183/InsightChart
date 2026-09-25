@@ -1,16 +1,21 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUpDown, Search } from "lucide-react";
+import { ArrowUpDown, Search, Pencil, Plus } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
 import { fmt } from "@/lib/analysis/stats";
+import { Button } from "@/components/ui/Button";
+import { RecordEditorModal } from "./RecordEditorModal";
 
 const PAGE_SIZE = 12;
 
 export function DataPreviewTable() {
-  const { state, dispatch, activeSheet } = useApp();
+  const { state, dispatch, activeSheet, canEdit } = useApp();
+  // Sample data isn't stored on the server, so there's nothing to correct until an upload.
+  const editable = canEdit && state.datasetVersion !== null;
+  const [editing, setEditing] = useState<{ index: number | null } | null>(null);
   const [page, setPage] = useState(0);
   const [localSearch, setLocalSearch] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
@@ -64,6 +69,11 @@ export function DataPreviewTable() {
         subtitle={`${activeSheet.headers.length} columns · ${activeSheet.rows.length} rows`}
         actions={
           <>
+            {editable && (
+              <Button size="sm" variant="outline" onClick={() => setEditing({ index: null })}>
+                <Plus size={13} /> Add record
+              </Button>
+            )}
             {state.source && state.source.sheets.length > 1 && (
               <Select
                 aria-label="Select sheet"
@@ -109,6 +119,7 @@ export function DataPreviewTable() {
                   </button>
                 </th>
               ))}
+              {editable && <th scope="col" className="px-3 py-2 font-semibold text-[var(--text-secondary)] text-right">Edit</th>}
             </tr>
           </thead>
           <tbody>
@@ -119,11 +130,22 @@ export function DataPreviewTable() {
                     {fmt(row[h])}
                   </td>
                 ))}
+                {editable && (
+                  <td className="px-3 py-1 text-right">
+                    <button
+                      onClick={() => setEditing({ index: activeSheet.rows.indexOf(row) })}
+                      aria-label={`Edit row ${page * PAGE_SIZE + i + 1}`}
+                      className="rounded p-1 text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-soft)]"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
             {!pageRows.length && (
               <tr>
-                <td colSpan={activeSheet.headers.length} className="px-3 py-6 text-center text-[var(--text-muted)]">
+                <td colSpan={activeSheet.headers.length + (editable ? 1 : 0)} className="px-3 py-6 text-center text-[var(--text-muted)]">
                   No rows match your search.
                 </td>
               </tr>
@@ -155,6 +177,10 @@ export function DataPreviewTable() {
           </button>
         </div>
       </div>
+      {canEdit && state.datasetVersion === null && (
+        <p className="text-[11px] text-[var(--text-muted)] mt-2">This is built-in sample data — upload a file to publish a dataset you can correct record by record.</p>
+      )}
+      {editing && <RecordEditorModal sheet={activeSheet} rowIndex={editing.index} onClose={() => setEditing(null)} />}
     </Card>
   );
 }

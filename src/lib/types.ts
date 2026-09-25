@@ -106,6 +106,17 @@ export interface AppState {
   /** raw department value -> canonical code, user-corrected overrides of the heuristic */
   departmentOverrides: Record<string, string>;
   nlHistory: { query: string; resultSummary: string }[];
-  /** true right after a persisted session was restored on load — drives a dismissible banner. */
-  restoredNotice: boolean;
+  /** A one-off informational message (e.g. local data migrated to the server) — dismissible. */
+  notice: string | null;
+  /** False until the shared dataset has been fetched from the server once. */
+  bootstrapped: boolean;
+  /** Server version of the shared dataset; null while showing built-in sample data. */
+  datasetVersion: number | null;
+  /** Who last changed the shared dataset, and when (display only). */
+  datasetUpdatedBy: string | null;
+  datasetUpdatedAt: number | null;
+  /** A newly uploaded file that still has to be saved to the server. */
+  dirtySource: boolean;
+  sync: "idle" | "saving" | "saved" | "error";
+  syncError?: string;
 }

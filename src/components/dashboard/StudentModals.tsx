@@ -3,7 +3,11 @@
 import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { Download } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+import { Download, Pencil, BarChart3 } from "lucide-react";
+import { useApp } from "@/context/AppContext";
+import { RecordEditorModal } from "@/components/data/RecordEditorModal";
 import type { ScoreBand } from "@/lib/types";
 import type { StudentRecord } from "@/lib/analysis/stats";
 import { fmt } from "@/lib/analysis/stats";
@@ -77,11 +81,29 @@ export function StudentListModal({
 }
 
 export function StudentDetailModal({ student, onClose }: { student: StudentRecord; onClose: () => void }) {
+  const { state, activeSheet, canEdit } = useApp();
+  const [editing, setEditing] = useState(false);
   const entries = Object.entries(student.row).filter(([, v]) => v !== null && v !== undefined && v !== "");
+  const rowIndex = activeSheet ? activeSheet.rows.indexOf(student.row) : -1;
+  const editable = canEdit && state.datasetVersion !== null && rowIndex !== -1;
+
+  if (editing && activeSheet) return <RecordEditorModal sheet={activeSheet} rowIndex={rowIndex} onClose={onClose} />;
+
   return (
     <Modal title={student.name} subtitle={`${student.registration} · ${student.department}`} onClose={onClose} width="md">
       <div className="flex items-center gap-2 mb-4">
         <Badge tone="accent">Score {student.score}</Badge>
+        <Link
+          href={`/student-performance?student=${encodeURIComponent(student.registration && student.registration !== "—" ? student.registration : student.name)}`}
+          className="inline-flex items-center gap-1 text-xs font-medium text-[var(--accent-strong)] hover:underline"
+        >
+          <BarChart3 size={13} /> Performance chart
+        </Link>
+        {editable && (
+          <Button size="sm" variant="outline" className="ml-auto" onClick={() => setEditing(true)}>
+            <Pencil size={13} /> Edit record
+          </Button>
+        )}
       </div>
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs" aria-label="Full assessment details">
         {entries.map(([k, v]) => (

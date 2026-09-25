@@ -1,12 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { User, LogOut } from "lucide-react";
-import { ROLES, ROLE_LABELS } from "@/lib/roles";
-import { useActingAsRole } from "@/lib/uiPrefs";
+import { ROLE_LABELS } from "@/lib/auth/permissions";
+import { useSession } from "@/lib/auth/session";
+import { api } from "@/lib/api";
+
+export async function signOut() {
+  try {
+    await api("/api/auth/logout", { method: "POST", redirectOn401: false });
+  } finally {
+    // Full navigation so every in-memory copy of the dataset is dropped with the session.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- deliberate full reload at a session boundary so no in-memory data from the previous session survives
+    window.location.assign("/login");
+  }
+}
 
 export function SidebarProfile({ collapsed, onExpandRequest }: { collapsed: boolean; onExpandRequest?: () => void }) {
-  const [role, setRole] = useActingAsRole();
+  const { user } = useSession();
+  const [signingOut, setSigningOut] = useState(false);
 
   if (collapsed) {
     return (
@@ -28,38 +41,34 @@ export function SidebarProfile({ collapsed, onExpandRequest }: { collapsed: bool
           <User size={16} />
         </span>
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-[var(--text-primary)] truncate">Staff Member</p>
-          <p className="text-[11px] text-[var(--text-muted)] truncate">{ROLE_LABELS[role]}</p>
+          <p className="text-xs font-semibold text-[var(--text-primary)] truncate" data-testid="profile-name">
+            {user.displayName}
+          </p>
+          <p className="text-[11px] text-[var(--text-muted)] truncate" data-testid="profile-role">
+            {ROLE_LABELS[user.role]}
+          </p>
         </div>
       </div>
 
-      <label className="flex flex-col gap-1 text-[10px] font-medium text-[var(--text-secondary)] mb-2">
-        Acting as
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value as typeof role)}
-          className="text-xs rounded-md border border-[var(--border-strong)] bg-white px-2 py-1"
-        >
-          {ROLES.map((r) => (
-            <option key={r} value={r}>
-              {ROLE_LABELS[r]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <p className="text-[10px] text-[var(--text-muted)] mb-2.5">Changes what you see in this browser only — InsightChart has no server or accounts.</p>
-
-      <div className="flex items-center justify-between text-xs">
-        <Link href="/settings" className="text-[var(--accent-strong)] font-medium hover:underline">
-          Settings
-        </Link>
+      <div className="flex items-center justify-between text-xs gap-2">
+        <div className="flex items-center gap-3">
+          <Link href="/account" className="text-[var(--accent-strong)] font-medium hover:underline">
+            Account
+          </Link>
+          <Link href="/settings" className="text-[var(--accent-strong)] font-medium hover:underline">
+            Settings
+          </Link>
+        </div>
         <button
           type="button"
-          onClick={() => setRole("administrator")}
-          className="flex items-center gap-1 text-[var(--text-muted)] hover:text-[var(--status-critical)]"
-          title="Clears the local role selection in this browser — there is no server session to end"
+          disabled={signingOut}
+          onClick={() => {
+            setSigningOut(true);
+            signOut();
+          }}
+          className="flex items-center gap-1 text-[var(--text-muted)] hover:text-[var(--status-critical)] disabled:opacity-50"
         >
-          <LogOut size={12} /> Logout
+          <LogOut size={12} /> {signingOut ? "Signing out…" : "Sign out"}
         </button>
       </div>
     </div>

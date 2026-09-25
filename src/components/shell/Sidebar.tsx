@@ -3,19 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronsLeft, ChevronsRight, BarChart3 } from "lucide-react";
-import { NAV_ITEMS } from "@/lib/nav";
+import { isNavItemActive, navItemsFor } from "@/lib/nav";
 import { SidebarNavItem } from "./SidebarNavItem";
 import { SidebarSearch } from "./SidebarSearch";
 import { SidebarProfile } from "./SidebarProfile";
 import { useRovingIndex } from "./useRovingIndex";
-import { useActingAsRole } from "@/lib/uiPrefs";
+import { useSession } from "@/lib/auth/session";
 import { useNotificationCounts } from "@/lib/notifications";
 
 export function Sidebar({ collapsed, onToggleCollapsed }: { collapsed: boolean; onToggleCollapsed: () => void }) {
   const pathname = usePathname();
-  const [role] = useActingAsRole();
+  const { user } = useSession();
   const { alertsCount, tasksDueCount } = useNotificationCounts();
-  const visibleItems = NAV_ITEMS.filter((i) => i.roles.includes(role));
+  const visibleItems = navItemsFor(user.role);
   const { activeIndex, registerRef, onKeyDown } = useRovingIndex(visibleItems.length);
 
   const badgeFor = (source?: "tasks" | "alerts") => (source === "tasks" ? tasksDueCount : source === "alerts" ? alertsCount : 0);
@@ -44,7 +44,7 @@ export function Sidebar({ collapsed, onToggleCollapsed }: { collapsed: boolean; 
             key={item.href}
             item={item}
             collapsed={collapsed}
-            active={pathname === item.href || (item.href === "/students" && pathname.startsWith("/students"))}
+            active={isNavItemActive(item, pathname)}
             badgeCount={badgeFor(item.badgeSource)}
             tabIndex={i === activeIndex ? 0 : -1}
             onKeyDown={(e) => onKeyDown(e, i)}
