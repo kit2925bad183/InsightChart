@@ -66,6 +66,47 @@ test.describe("InsightChart smoke test", () => {
     await expect(page.getByRole("dialog", { name: /Students scoring/ })).toBeVisible();
   });
 
+  test("a bar within a single department's own chart is scoped to that department", async ({ page }) => {
+    await page.goto("/");
+    const firstCard = page.locator("[data-report-card]").first();
+    const dept = await firstCard.getAttribute("data-report-card");
+    await firstCard.scrollIntoViewIfNeeded();
+    await firstCard.locator("svg .recharts-bar-rectangle path").last().click({ force: true });
+    const dialog = page.getByRole("dialog", { name: /Students scoring/ });
+    await expect(dialog).toBeVisible();
+    const deptCells = await dialog.locator("table tbody tr td:nth-child(3)").allTextContents();
+    expect(deptCells.length).toBeGreaterThan(0);
+    expect(deptCells.every((d) => d.trim() === dept)).toBe(true);
+  });
+
+  test("shareable HTML report downloads and works fully standalone (no server)", async ({ page }, testInfo) => {
+    await page.goto("/");
+    await page.waitForSelector("text=Department reports");
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      page.getByRole("button", { name: "Download a shareable interactive HTML report" }).click(),
+    ]);
+    // download.path() is a temp file with no extension — Chromium would render
+    // it as plain text, not HTML. Save it with a real .html extension instead,
+    // same as a person saving the file the browser just downloaded for them.
+    const savedPath = testInfo.outputPath("shared-report.html");
+    await download.saveAs(savedPath);
+
+    // Open the downloaded file directly (file://) in a fresh, unrelated page —
+    // simulates the recipient, who has no access to this app or server.
+    const standalone = await page.context().newPage();
+    const standaloneErrors: string[] = [];
+    standalone.on("pageerror", (e) => standaloneErrors.push(e.message));
+    await standalone.goto("file://" + savedPath.split("\\").join("/"));
+    await standalone.waitForSelector("text=All departments");
+    await standalone.locator(".card").first().locator(".bar").last().click();
+    await expect(standalone.locator("#dlg[open]")).toBeVisible();
+    const rows = await standalone.locator("#dlgBody tr").count();
+    expect(rows).toBeGreaterThan(0);
+    expect(standaloneErrors).toEqual([]);
+    await standalone.close();
+  });
+
   test("reset asks for confirmation once real data is loaded", async ({ page }) => {
     await page.goto("/");
     await page.locator('input[type="file"]').first().setInputFiles({

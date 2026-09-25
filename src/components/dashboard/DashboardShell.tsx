@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, RefreshCcw, History, X, FileDown, Loader2 } from "lucide-react";
+import { BarChart3, RefreshCcw, History, X, FileDown, Loader2, Share2 } from "lucide-react";
 import { clearSession } from "@/lib/persistence";
 import { exportMultiPagePdf } from "@/lib/export";
+import { downloadInteractiveReport } from "@/lib/htmlReport";
 import { useApp } from "@/context/AppContext";
 import { UploadArea, InlineWarnings } from "@/components/upload/UploadArea";
 import { DataPreviewTable } from "@/components/data/DataPreviewTable";
@@ -78,6 +79,19 @@ export function DashboardShell() {
 
   const bandStudents = selectedBand ? records.filter((r) => r.score >= selectedBand.min && r.score <= selectedBand.max) : [];
 
+  const exportInteractiveHtml = () => {
+    const label = deriveAssessmentTitle(state.source?.fileName ?? "report");
+    downloadInteractiveReport(
+      {
+        title: label || "Score Report",
+        subtitle: state.source?.fileName ?? "",
+        students: records.map((r) => ({ name: r.name, registration: r.registration, department: r.department, score: r.score })),
+        bands: state.scoreBands,
+      },
+      `insightchart-${label.replace(/[^a-z0-9]+/gi, "-") || "report"}`
+    );
+  };
+
   // "/" focuses the data-preview search, "u" opens the upload picker — ignored while
   // typing anywhere else so normal text entry (including "/" or "u" in a search box) works.
   useEffect(() => {
@@ -116,6 +130,17 @@ export function DashboardShell() {
               <Button size="sm" variant="ghost" onClick={exportFullReport} disabled={exportingReport} aria-label="Export full report as PDF">
                 {exportingReport ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
                 {exportingReport ? "Exporting…" : "Full report"}
+              </Button>
+            )}
+            {state.status === "ready" && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={exportInteractiveHtml}
+                aria-label="Download a shareable interactive HTML report"
+                title="Download a standalone HTML file — click-a-bar-to-see-students works for whoever you send it to, no InsightChart needed"
+              >
+                <Share2 size={14} /> Shareable HTML
               </Button>
             )}
             <Button

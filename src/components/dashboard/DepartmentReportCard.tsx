@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { ScoreBand } from "@/lib/types";
 import type { StudentRecord } from "@/lib/analysis/stats";
@@ -10,6 +10,7 @@ import { tierColorVar } from "@/lib/palette";
 import { Button } from "@/components/ui/Button";
 import { Download, FileImage } from "lucide-react";
 import { exportChartPdf, exportChartPng } from "@/lib/export";
+import { StudentListModal, StudentDetailModal } from "@/components/dashboard/StudentModals";
 
 const TIER_META = {
   support: { label: "Needs support", color: tierColorVar.support, soft: "var(--status-critical-soft)" },
@@ -52,6 +53,8 @@ export function DepartmentReportCard({
   bands: ScoreBand[];
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [selectedBand, setSelectedBand] = useState<ScoreBand | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<StudentRecord | null>(null);
 
   const { data, total, avg, strongCount, supportCount, strongMin, supportMax, tierTotals } = useMemo(() => {
     const counts = new Map<string, number>();
@@ -65,7 +68,7 @@ export function DepartmentReportCard({
     const { strongMin, supportMax } = deriveTierThresholds(bands);
     const scores = records.map((r) => r.score);
     return {
-      data: bands.map((b) => ({ label: b.label, count: counts.get(b.id) ?? 0, tier: b.tier })),
+      data: bands.map((b) => ({ label: b.label, count: counts.get(b.id) ?? 0, tier: b.tier, band: b })),
       total: records.length,
       avg: scores.length ? round1(mean(scores)) : 0,
       strongCount: records.filter((r) => r.score >= strongMin).length,
@@ -112,7 +115,9 @@ export function DepartmentReportCard({
       </div>
 
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-secondary)]">Number of students</p>
+        <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-secondary)]">
+          Number of students <span className="font-medium normal-case text-[var(--text-muted)]">— click a bar for the student list</span>
+        </p>
         <div className="flex items-center gap-3 text-[11px] text-[var(--text-secondary)]">
           {(["strong", "developing", "support"] as const).map((t) => (
             <span key={t} className="flex items-center gap-1.5">
@@ -134,6 +139,8 @@ export function DepartmentReportCard({
             radius={[4, 4, 0, 0]}
             maxBarSize={48}
             isAnimationActive={false}
+            onClick={(d: { band: ScoreBand }) => setSelectedBand(d.band)}
+            cursor="pointer"
             label={(props: { x?: number; y?: number; width?: number; value?: number }) => {
               const { x = 0, y = 0, width = 0, value } = props;
               return (
@@ -190,6 +197,17 @@ export function DepartmentReportCard({
           Score bands: {bands[0]?.label}, then {bands[1]?.label} through {bands[bands.length - 1]?.label}
         </span>
       </div>
+
+      {selectedBand && (
+        <StudentListModal
+          band={selectedBand}
+          students={records.filter((r) => r.score >= selectedBand.min && r.score <= selectedBand.max)}
+          onClose={() => setSelectedBand(null)}
+          onSelectStudent={(s) => setSelectedStudent(s)}
+          extraFields={Object.keys(records[0]?.row ?? {})}
+        />
+      )}
+      {selectedStudent && <StudentDetailModal student={selectedStudent} onClose={() => setSelectedStudent(null)} />}
     </div>
   );
 }
