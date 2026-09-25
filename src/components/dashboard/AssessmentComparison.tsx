@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { UploadCloud, X, FileImage } from "lucide-react";
+import { UploadCloud, X, FileImage, Plus } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { parseFile } from "@/lib/parsers";
@@ -21,31 +21,74 @@ export function AssessmentComparison({
   recordsA: StudentRecord[];
   normalizeDepartments: boolean;
 }) {
+  const [slotIds, setSlotIds] = useState<string[]>(() => [makeId()]);
+
+  return (
+    <Card>
+      <CardHeader
+        title="Compare with another assessment"
+        subtitle="Upload another file to see department-level score trends against it — add as many as you like"
+        actions={
+          <Button size="sm" variant="ghost" onClick={() => setSlotIds((prev) => [...prev, makeId()])} aria-label="Add another comparison">
+            <Plus size={14} /> Add comparison
+          </Button>
+        }
+      />
+      <div className="space-y-4">
+        {slotIds.map((id) => (
+          <ComparisonSlot
+            key={id}
+            fileALabel={fileALabel}
+            recordsA={recordsA}
+            normalizeDepartments={normalizeDepartments}
+            onRemove={slotIds.length > 1 ? () => setSlotIds((prev) => prev.filter((s) => s !== id)) : undefined}
+          />
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+let counter = 0;
+function makeId() {
+  counter += 1;
+  return `cmp-${counter}-${Date.now()}`;
+}
+
+function ComparisonSlot({
+  fileALabel,
+  recordsA,
+  normalizeDepartments,
+  onRemove,
+}: {
+  fileALabel: string;
+  recordsA: StudentRecord[];
+  normalizeDepartments: boolean;
+  onRemove?: () => void;
+}) {
   const [otherSource, setOtherSource] = useState<ParsedSource | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const reportRef = useRef<HTMLDivElement>(null);
+  const inputId = useId();
 
-  const handleFile = useCallback(
-    async (file: File) => {
-      setLoading(true);
-      setError(null);
-      try {
-        const source = await parseFile(file);
-        if (!source.sheets.length) {
-          setError(source.warnings[0] ?? "Could not read this file.");
-        } else {
-          setOtherSource(source);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Could not read this file.");
-      } finally {
-        setLoading(false);
+  const handleFile = useCallback(async (file: File) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const source = await parseFile(file);
+      if (!source.sheets.length) {
+        setError(source.warnings[0] ?? "Could not read this file.");
+      } else {
+        setOtherSource(source);
       }
-    },
-    []
-  );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not read this file.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const recordsB = useMemo(() => {
     if (!otherSource?.sheets.length) return [];
@@ -74,23 +117,27 @@ export function AssessmentComparison({
   }, [recordsA, recordsB]);
 
   return (
-    <Card>
-      <CardHeader
-        title="Compare with another assessment"
-        subtitle="Upload a second file to see department-level score trends between them"
-        actions={
-          otherSource && (
-            <>
-              <Button size="sm" variant="ghost" onClick={() => reportRef.current && exportChartPng(reportRef.current, "assessment-comparison")}>
-                <FileImage size={14} /> PNG
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => setOtherSource(null)} aria-label="Remove comparison file">
-                <X size={14} /> Remove
-              </Button>
-            </>
-          )
-        }
-      />
+    <div className="rounded-xl border border-[var(--border)] p-4 relative">
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <p className="text-xs font-semibold text-[var(--text-secondary)] truncate">{otherSource ? otherSource.fileName : "New comparison"}</p>
+        <div className="flex items-center gap-1 shrink-0">
+          {otherSource && (
+            <Button size="sm" variant="ghost" onClick={() => reportRef.current && exportChartPng(reportRef.current, "assessment-comparison")}>
+              <FileImage size={14} /> PNG
+            </Button>
+          )}
+          {otherSource && (
+            <Button size="sm" variant="ghost" onClick={() => setOtherSource(null)} aria-label="Clear this comparison file">
+              <X size={14} /> Clear
+            </Button>
+          )}
+          {onRemove && (
+            <Button size="sm" variant="ghost" onClick={onRemove} aria-label="Remove this comparison">
+              <X size={14} />
+            </Button>
+          )}
+        </div>
+      </div>
 
       {!otherSource && (
         <div
@@ -102,13 +149,14 @@ export function AssessmentComparison({
         >
           <input
             ref={inputRef}
+            id={inputId}
             type="file"
             accept=".xlsx,.xls,.csv,.pdf,.docx,.txt"
             className="hidden"
             onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
           />
           <UploadCloud size={22} className="text-[var(--accent)]" />
-          <p className="text-xs text-[var(--text-secondary)]">{loading ? "Reading file…" : "Click to upload a second assessment"}</p>
+          <p className="text-xs text-[var(--text-secondary)]">{loading ? "Reading file…" : "Click to upload an assessment to compare"}</p>
           {error && <p className="text-xs text-[var(--status-critical)]">{error}</p>}
         </div>
       )}
@@ -167,6 +215,6 @@ export function AssessmentComparison({
           )}
         </div>
       )}
-    </Card>
+    </div>
   );
 }

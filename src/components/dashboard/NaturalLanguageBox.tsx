@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Search } from "lucide-react";
+import { Sparkles, Search, X } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -111,8 +111,18 @@ export function NaturalLanguageBox({ records }: { records: StudentRecord[] }) {
       </div>
 
       {result && (
-        <div className="mt-3 rounded-lg border border-[var(--border)] bg-[var(--surface-muted,#f2f6fc)] p-3 fade-in">
-          <p className="text-xs font-medium text-[var(--text-primary)]">{result.summary}</p>
+        <div className="mt-3 rounded-lg border border-[var(--border)] bg-[var(--surface-muted,#f2f6fc)] p-3 fade-in relative">
+          <button
+            onClick={() => {
+              setResult(null);
+              setQuery("");
+            }}
+            aria-label="Clear result"
+            className="absolute top-2 right-2 rounded p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+          >
+            <X size={13} />
+          </button>
+          <p className="text-xs font-medium text-[var(--text-primary)] pr-5">{result.summary}</p>
           {result.students && result.students.length > 0 && (
             <ul className="mt-2 grid sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--text-secondary)] max-h-40 overflow-y-auto">
               {result.students.slice(0, 30).map((s, i) => (
